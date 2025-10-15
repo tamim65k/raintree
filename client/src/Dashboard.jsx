@@ -3,6 +3,7 @@ import { supabase } from './supabaseClient'
 import PlanCreator from './PlanCreator'
 import PlanTracker from './PlanTracker'
 import NotificationManager from './NotificationManager'
+import FileManager from './FileManager'
 
 export default function Dashboard({ user, onLogout }) {
     const [plans, setPlans] = useState([])
@@ -10,6 +11,7 @@ export default function Dashboard({ user, onLogout }) {
     const [showCreator, setShowCreator] = useState(false)
     const [selectedPlan, setSelectedPlan] = useState(null)
     const [showNotifications, setShowNotifications] = useState(false)
+    const [showFiles, setShowFiles] = useState(false)
     const [stats, setStats] = useState({ totalPlans: 0, activePlans: 0, totalProgress: 0, streak: 0 })
 
     useEffect(() => {
@@ -29,7 +31,7 @@ export default function Dashboard({ user, onLogout }) {
             setPlans(data || [])
             calculateStats(data || [])
         } catch (err) {
-            console.error('Error loading plans:', err)
+            // Error handled silently in production
         }
         setLoading(false)
     }
@@ -129,6 +131,19 @@ export default function Dashboard({ user, onLogout }) {
         )
     }
 
+    if (showFiles) {
+        return (
+            <div className="dashboard">
+                <FileManager user={user} />
+                <div className="dashboard-actions">
+                    <button className="action-btn secondary" onClick={() => setShowFiles(false)}>
+                        <span className="yellow">[BACK TO DASHBOARD]</span>
+                    </button>
+                </div>
+            </div>
+        )
+    }
+
     return (
         <div className="dashboard">
             <div className="dashboard-header">
@@ -160,6 +175,9 @@ export default function Dashboard({ user, onLogout }) {
             <div className="dashboard-actions">
                 <button className="action-btn primary" onClick={() => setShowCreator(true)}>
                     <span className="green">[+ CREATE NEW PLAN]</span>
+                </button>
+                <button className="action-btn primary" onClick={() => setShowFiles(true)}>
+                    <span className="cyan">[📁 FILES]</span>
                 </button>
                 <button className="action-btn primary" onClick={() => setShowNotifications(true)}>
                     <span className="cyan">[📬 NOTIFICATIONS]</span>

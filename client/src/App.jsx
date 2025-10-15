@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useMemo, useCallback, memo } from 'react'
 import AuthWindow from './AuthWindow'
 import Dashboard from './Dashboard'
 
@@ -45,7 +45,7 @@ function Window({ id, title, children, x, y, width, height, onClose, onMinimize,
     )
 }
 
-const TerminalLine = ({ text }) => <div className="terminal-line" dangerouslySetInnerHTML={{ __html: text }} />
+const TerminalLine = memo(({ text }) => <div className="terminal-line" dangerouslySetInnerHTML={{ __html: text }} />)
 
 // Hacking data terminal component
 function HackingTerminal({ windowId }) {
@@ -148,19 +148,26 @@ function HackingTerminal({ windowId }) {
         
         const interval = setInterval(() => {
             if (index < data.length) {
-                setLines(prev => [...prev, data[index]])
+                setLines(prev => {
+                    // Limit lines to prevent memory issues
+                    const newLines = [...prev, data[index]]
+                    return newLines.length > 100 ? newLines.slice(-100) : newLines
+                })
                 index++
             } else {
                 // Add random hacking data
                 const randomData = generateRandomHackingData(windowId)
-                setLines(prev => [...prev, randomData])
+                setLines(prev => {
+                    const newLines = [...prev, randomData]
+                    return newLines.length > 100 ? newLines.slice(-100) : newLines
+                })
             }
 
             // Auto-scroll to bottom
             if (contentRef.current) {
                 contentRef.current.scrollTop = contentRef.current.scrollHeight
             }
-        }, 800 + Math.random() * 400)
+        }, 1000 + Math.random() * 500)
 
         return () => clearInterval(interval)
     }, [windowId])
@@ -320,14 +327,24 @@ function IPTerminal() {
 }
 
 // Logo window with hacking animation
-function LogoWindow({ onUserSystemClick }) {
+const LogoWindow = memo(({ onUserSystemClick }) => {
     const [glitch, setGlitch] = useState(false)
+
+    // Memoize binary digits to prevent re-generation
+    const binaryDigits = useMemo(() => 
+        Array(15).fill('').map((_, i) => ({
+            key: i,
+            left: `${i * 6.67}%`,
+            delay: `${Math.random() * 2}s`,
+            digit: Math.random() > 0.5 ? '1' : '0'
+        }))
+    , [])
 
     useEffect(() => {
         const interval = setInterval(() => {
             setGlitch(true)
             setTimeout(() => setGlitch(false), 150)
-        }, 3000 + Math.random() * 2000)
+        }, 4000 + Math.random() * 2000)
 
         return () => clearInterval(interval)
     }, [])
@@ -335,7 +352,7 @@ function LogoWindow({ onUserSystemClick }) {
     return (
         <div className={`logo-content ${glitch ? 'glitch' : ''}`}>
             <div className="tree-logo-animated">
-                <svg viewBox="0 0 200 200" width="140" height="140">
+                <svg viewBox="0 0 200 200" width="70" height="70">
                     <circle cx="100" cy="100" r="95" fill="none" stroke="#00ff99" strokeWidth="2" className="pulse-ring"/>
                     <rect x="92" y="130" width="16" height="40" fill="#00ff99"/>
                     <path d="M 85 170 Q 70 175 60 180 M 115 170 Q 130 175 140 180 M 100 170 L 100 180" stroke="#00ff99" strokeWidth="2" fill="none"/>
@@ -353,18 +370,18 @@ function LogoWindow({ onUserSystemClick }) {
                 <span className="green">► USER SYSTEM</span>
             </button>
             <div className="binary-rain">
-                {Array(20).fill('').map((_, i) => (
-                    <span key={i} className="binary-digit" style={{ left: `${i * 5}%`, animationDelay: `${Math.random() * 2}s` }}>
-                        {Math.random() > 0.5 ? '1' : '0'}
+                {binaryDigits.map(({ key, left, delay, digit }) => (
+                    <span key={key} className="binary-digit" style={{ left, animationDelay: delay }}>
+                        {digit}
                     </span>
                 ))}
             </div>
         </div>
     )
-}
+})
 
 export default function App() {
-    const [wins, setWins] = useState([1, 2, 3, 4, 5, 6, 7].map(id => ({ id, visible: true })))
+    const [wins, setWins] = useState([1, 2, 3, 4, 5, 6, 7].map(id => ({ id, visible: id !== 7 })))
     const [focused, setFocused] = useState(5)
     const [user, setUser] = useState(null)
     const [showAuth, setShowAuth] = useState(false)
@@ -379,12 +396,28 @@ export default function App() {
     }, [])
 
     useEffect(() => {
+        let rafId = null
+        let mouseX = 0
+        let mouseY = 0
+
         const updateCursor = (e) => {
-            document.documentElement.style.setProperty('--mouse-x', e.clientX + 'px')
-            document.documentElement.style.setProperty('--mouse-y', e.clientY + 'px')
+            mouseX = e.clientX
+            mouseY = e.clientY
+            
+            if (!rafId) {
+                rafId = requestAnimationFrame(() => {
+                    document.documentElement.style.setProperty('--mouse-x', mouseX + 'px')
+                    document.documentElement.style.setProperty('--mouse-y', mouseY + 'px')
+                    rafId = null
+                })
+            }
         }
-        document.addEventListener('mousemove', updateCursor)
-        return () => document.removeEventListener('mousemove', updateCursor)
+        
+        document.addEventListener('mousemove', updateCursor, { passive: true })
+        return () => {
+            document.removeEventListener('mousemove', updateCursor)
+            if (rafId) cancelAnimationFrame(rafId)
+        }
     }, [])
 
     const close = (id) => {
@@ -394,12 +427,16 @@ export default function App() {
         setWins(wins.map(w => w.id === id ? { ...w, visible: false } : w))
     }
     const minimize = (id) => setWins(wins.map(w => w.id === id ? { ...w, visible: false } : w))
-    const getZ = (id) => id === focused ? 1000 : 100 + id
+    const getZ = (id) => {
+        // Window 7 (auth/dashboard) should always be on top when visible
+        if (id === 7 && wins.find(w => w.id === 7)?.visible) return 2000
+        return id === focused ? 1000 : 100 + id
+    }
 
     const handleAuthSuccess = (userData) => {
         setUser(userData)
         setShowAuth(false)
-        close(7)
+        // Keep window 7 open to show dashboard
     }
 
     const handleLogout = () => {
@@ -440,6 +477,8 @@ export default function App() {
                 windowHeight: window.innerHeight,
                 windowWidth: window.innerWidth
             })
+            // Force window positions to update on resize
+            setWins(prev => [...prev])
         }
         window.addEventListener('resize', handleResize)
         return () => window.removeEventListener('resize', handleResize)

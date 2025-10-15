@@ -25,7 +25,7 @@ export default function PlanTracker({ user, plan, onClose, onUpdated }) {
             setProgress(data || [])
             prepareChartData(data || [])
         } catch (err) {
-            console.error('Error loading progress:', err)
+            // Error handled silently in production
         }
     }
 
@@ -86,7 +86,7 @@ export default function PlanTracker({ user, plan, onClose, onUpdated }) {
             loadProgress()
             onUpdated()
         } catch (err) {
-            console.error('Error adding progress:', err)
+            // Error handled silently in production
         }
 
         setLoading(false)
@@ -109,7 +109,7 @@ export default function PlanTracker({ user, plan, onClose, onUpdated }) {
             onUpdated()
             onClose()
         } catch (err) {
-            console.error('Error marking complete:', err)
+            // Error handled silently in production
         }
 
         setLoading(false)

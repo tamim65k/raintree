@@ -66,7 +66,7 @@ export default function NotificationManager({ user }) {
 
             setNotifications(newNotifications)
         } catch (err) {
-            console.error('Error checking notifications:', err)
+            // Error handled silently in production
         }
     }
 

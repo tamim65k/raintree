@@ -5,7 +5,6 @@ export default function AuthWindow({ onSuccess, onClose }) {
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
-    const [mode, setMode] = useState('login') // 'login' or 'signup'
 
     const handleAuth = async (e) => {
         e.preventDefault()
@@ -13,54 +12,33 @@ export default function AuthWindow({ onSuccess, onClose }) {
         setError('')
 
         try {
-            if (mode === 'signup') {
-                // Check if password exists in DB
-                const { data: existingUser, error: checkError } = await supabase
-                    .from('users')
-                    .select('id, password')
-                    .eq('password', password)
-                    .single()
+            // Login: Fetch all users and find by password client-side
+            const { data: allUsers, error: fetchError } = await supabase
+                .from('users')
+                .select('*')
 
-                if (existingUser) {
-                    setError('This password already exists. Please choose a different password.')
-                    setLoading(false)
-                    return
-                }
+            if (fetchError) throw fetchError
 
-                // Create new user
-                const { data, error } = await supabase
-                    .from('users')
-                    .insert([{ password, created_at: new Date().toISOString() }])
-                    .select()
-                    .single()
-
-                if (error) throw error
-
-                // Store user session
-                localStorage.setItem('user_id', data.id)
-                localStorage.setItem('user_password', password)
-                onSuccess(data)
-            } else {
-                // Login: Find user by password
-                const { data, error } = await supabase
-                    .from('users')
-                    .select('*')
-                    .eq('password', password)
-                    .single()
-
-                if (error || !data) {
-                    setError('Invalid password. Please try again.')
-                    setLoading(false)
-                    return
-                }
-
-                // Store user session
-                localStorage.setItem('user_id', data.id)
-                localStorage.setItem('user_password', password)
-                onSuccess(data)
+            // Find user by password
+            const user = allUsers?.find(u => u.password === password)
+            if (!user) {
+                setError('Invalid password. Please contact administrator for access.')
+                setLoading(false)
+                return
             }
+
+            // Store user session
+            localStorage.setItem('user_id', user.id)
+            localStorage.setItem('user_password', password)
+            onSuccess(user)
         } catch (err) {
-            setError(err.message || 'An error occurred')
+            // Provide a clearer hint when Supabase reports an invalid API key
+            let message = err.message || 'An error occurred'
+            if (err && err.message && err.message.toLowerCase().includes('invalid api key')) {
+                message = `${message}. Please verify your VITE_SUPABASE_ANON_KEY in client/.env is the public anon key from your Supabase project and restart the dev server.`
+            }
+
+            setError(message)
         }
         
         setLoading(false)
@@ -76,23 +54,6 @@ export default function AuthWindow({ onSuccess, onClose }) {
             </div>
 
             <form onSubmit={handleAuth} className="auth-form">
-                <div className="auth-mode-selector">
-                    <button
-                        type="button"
-                        className={`mode-btn ${mode === 'login' ? 'active' : ''}`}
-                        onClick={() => setMode('login')}
-                    >
-                        <span className="cyan">[LOGIN]</span>
-                    </button>
-                    <button
-                        type="button"
-                        className={`mode-btn ${mode === 'signup' ? 'active' : ''}`}
-                        onClick={() => setMode('signup')}
-                    >
-                        <span className="cyan">[SIGNUP]</span>
-                    </button>
-                </div>
-
                 <div className="auth-field">
                     <label className="yellow">PASSWORD:</label>
                     <input
@@ -100,7 +61,7 @@ export default function AuthWindow({ onSuccess, onClose }) {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         className="auth-input"
-                        placeholder="Enter your unique password"
+                        placeholder="Enter your password"
                         required
                         autoFocus
                         disabled={loading}
@@ -116,9 +77,9 @@ export default function AuthWindow({ onSuccess, onClose }) {
                 <div className="auth-actions">
                     <button type="submit" className="auth-btn primary" disabled={loading}>
                         {loading ? (
-                            <span className="yellow">PROCESSING...</span>
+                            <span className="yellow">AUTHENTICATING...</span>
                         ) : (
-                            <span className="green">{mode === 'login' ? 'LOGIN' : 'SIGNUP'}</span>
+                            <span className="green">LOGIN</span>
                         )}
                     </button>
                     <button type="button" className="auth-btn secondary" onClick={onClose} disabled={loading}>
@@ -128,10 +89,7 @@ export default function AuthWindow({ onSuccess, onClose }) {
 
                 <div className="auth-info">
                     <span className="cyan">
-                        {mode === 'login' 
-                            ? '> New user? Switch to SIGNUP to create an account'
-                            : '> Existing user? Switch to LOGIN to access your dashboard'
-                        }
+                        {'> Contact administrator for access credentials'}
                     </span>
                 </div>
             </form>

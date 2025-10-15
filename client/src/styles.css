@@ -33,16 +33,29 @@ body, html, #root {
     overflow-x: hidden;
 }
 
-/* Custom cursor - 4-pointed star */
+/* Custom cursor - Animated Hacking Crosshair */
 .star-cursor {
     position: fixed;
-    width: 24px;
-    height: 24px;
+    width: 32px;
+    height: 32px;
     pointer-events: none;
     z-index: 10000;
     left: var(--mouse-x, 0);
     top: var(--mouse-y, 0);
     transform: translate(-50%, -50%);
+    animation: cursor-pulse 2s ease-in-out infinite;
+    will-change: transform;
+}
+
+@keyframes cursor-pulse {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.1);
+        opacity: 0.8;
+    }
 }
 
 .star-cursor::before,
@@ -50,21 +63,48 @@ body, html, #root {
     content: '';
     position: absolute;
     background: var(--green);
-    box-shadow: 0 0 10px var(--green);
+    box-shadow: 0 0 15px var(--green), 0 0 30px rgba(0, 255, 153, 0.5);
+    animation: cursor-glow 1.5s ease-in-out infinite;
+}
+
+@keyframes cursor-glow {
+    0%, 100% {
+        box-shadow: 0 0 10px var(--green), 0 0 20px rgba(0, 255, 153, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 20px var(--green), 0 0 40px rgba(0, 255, 153, 0.6);
+    }
 }
 
 .star-cursor::before {
     width: 2px;
-    height: 24px;
-    left: 11px;
+    height: 32px;
+    left: 15px;
     top: 0;
 }
 
 .star-cursor::after {
-    width: 24px;
+    width: 32px;
     height: 2px;
     left: 0;
-    top: 11px;
+    top: 15px;
+}
+
+/* Add corner brackets for hacking effect */
+.star-cursor {
+    border: 2px solid transparent;
+    border-image: linear-gradient(45deg, var(--green) 0%, transparent 25%, transparent 75%, var(--green) 100%);
+    border-image-slice: 1;
+}
+
+/* Scanning line effect */
+@keyframes scan-line {
+    0%, 100% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
 }
 
 .window {
@@ -75,6 +115,8 @@ body, html, #root {
     display: flex;
     flex-direction: column;
     cursor: default;
+    will-change: transform;
+    backface-visibility: hidden;
 }
 
 .window-titlebar {
@@ -309,6 +351,7 @@ span.green {
     height: 100%;
     position: relative;
     overflow: hidden;
+    padding: 15px;
 }
 
 .tree-logo-animated {
@@ -316,6 +359,7 @@ span.green {
     align-items: center;
     justify-content: center;
     z-index: 2;
+    margin-bottom: 10px;
 }
 
 .tree-logo-animated svg {
@@ -1211,6 +1255,190 @@ span.green {
     line-height: 1.8;
 }
 
+/* File Manager Styles */
+.file-manager {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.file-manager-header {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.file-manager-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.file-error {
+    padding: 10px 15px;
+    background: rgba(255, 0, 0, 0.1);
+    border: 1px solid var(--red);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: slideIn 0.3s ease-out;
+}
+
+.error-close {
+    background: transparent;
+    border: none;
+    color: var(--red);
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0 5px;
+}
+
+.file-upload-section {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    padding: 15px;
+    background: rgba(0, 30, 30, 0.5);
+    border: 1px solid var(--green);
+}
+
+.file-upload-btn {
+    padding: 10px 20px;
+    background: transparent;
+    border: 1px solid var(--green);
+    cursor: pointer;
+    transition: all 0.3s;
+    display: inline-block;
+}
+
+.file-upload-btn:hover {
+    background: rgba(0, 255, 153, 0.1);
+    box-shadow: 0 0 10px rgba(0, 255, 153, 0.3);
+}
+
+.file-limit {
+    font-size: 12px;
+}
+
+.upload-progress {
+    padding: 10px;
+    background: rgba(0, 30, 30, 0.5);
+    border: 1px solid var(--yellow);
+}
+
+.files-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.file-item {
+    padding: 15px;
+    background: rgba(0, 30, 30, 0.5);
+    border: 1px solid rgba(0, 255, 153, 0.3);
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.file-item:hover {
+    background: rgba(0, 40, 40, 0.7);
+    border-color: var(--green);
+    transform: translateX(5px);
+}
+
+.file-item.selected {
+    background: rgba(0, 50, 50, 0.8);
+    border-color: var(--cyan);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+}
+
+.file-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+}
+
+.file-name {
+    flex: 1;
+    min-width: 150px;
+    word-break: break-word;
+}
+
+.file-size {
+    min-width: 80px;
+}
+
+.file-date {
+    font-size: 12px;
+}
+
+.file-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.file-btn {
+    padding: 8px 15px;
+    background: transparent;
+    border: 1px solid currentColor;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 12px;
+}
+
+.file-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.05);
+}
+
+.file-edit-meta {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex: 1;
+}
+
+.meta-input {
+    flex: 1;
+    padding: 8px;
+    background: rgba(0, 20, 20, 0.8);
+    border: 1px solid var(--cyan);
+    color: var(--green);
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+}
+
+.meta-save, .meta-cancel {
+    padding: 8px 15px;
+    background: transparent;
+    border: 1px solid currentColor;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 12px;
+}
+
+.meta-save:hover, .meta-cancel:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.file-stats {
+    padding: 15px;
+    background: rgba(0, 30, 30, 0.5);
+    border: 1px solid var(--cyan);
+    text-align: center;
+    font-size: 13px;
+}
+
 /* Responsive adjustments for new components */
 @media (max-width: 768px) {
     .stats-grid {
@@ -1239,5 +1467,18 @@ span.green {
     
     .notification-content {
         font-size: 13px;
+    }
+    
+    .file-info {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .file-actions {
+        width: 100%;
+    }
+    
+    .file-btn {
+        flex: 1;
     }
 }
