@@ -52,62 +52,28 @@ FOR SELECT
 TO authenticated
 USING (
   bucket_id = 'user-files' AND
-  (storage.foldername(name))[1] = auth.uid()::text
-);
-```
-
-#### Policy 3: Allow Users to Delete Their Own Files
-```sql
--- Policy Name: Allow users to delete their own files
--- Operation: DELETE
--- Policy Definition:
-CREATE POLICY "Allow users to delete their own files"
+CREATE POLICY "Users can manage their own files"
 ON storage.objects
-FOR DELETE
-TO authenticated
+FOR ALL
 USING (
-  bucket_id = 'user-files' AND
-  (storage.foldername(name))[1] = auth.uid()::text
-);
-```
-
-#### Policy 4: Allow Users to Update Their Own Files
-```sql
--- Policy Name: Allow users to update their own files
--- Operation: UPDATE
--- Policy Definition:
-CREATE POLICY "Allow users to update their own files"
-ON storage.objects
-FOR UPDATE
-TO authenticated
-USING (
-  bucket_id = 'user-files' AND
-  (storage.foldername(name))[1] = auth.uid()::text
+    bucket_id = 'user-files' AND
+    (storage.foldername(name))[1] = auth.uid()::text
 )
 WITH CHECK (
-  bucket_id = 'user-files' AND
-  (storage.foldername(name))[1] = auth.uid()::text
+    bucket_id = 'user-files' AND
+    (storage.foldername(name))[1] = auth.uid()::text
 );
 ```
 
----
-
-## Step 3: Alternative - Public Access (If Needed)
-
-If you want to make files publicly accessible (not recommended for user files):
-
-```sql
--- Allow public read access
-CREATE POLICY "Public read access"
-ON storage.objects
-FOR SELECT
-TO public
-USING (bucket_id = 'user-files');
-```
+This single policy replaces all previous policies and handles:
+- SELECT (view files)
+- INSERT (upload files)
+- UPDATE (modify files)
+- DELETE (remove files)
 
 ---
 
-## Step 4: Configure Bucket Settings
+## Step 3: Configure Bucket Settings
 
 ### Via Supabase Dashboard:
 1. Go to **Storage** → **user-files** bucket
@@ -128,7 +94,7 @@ WHERE id = 'user-files';
 
 ---
 
-## Step 5: Test File Upload
+## Step 4: Test File Upload
 
 ### Using the Application:
 1. Log in to your dashboard
@@ -188,7 +154,7 @@ The timestamp prefix (13 digits) prevents filename conflicts.
 
 ### Files not showing in list
 - **Cause**: Policy doesn't allow SELECT
-- **Solution**: Add the SELECT policy from Step 2
+- **Solution**: The single policy above handles all operations
 
 ---
 
