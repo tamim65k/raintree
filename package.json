@@ -5,6 +5,8 @@
     "scripts": {
         "dev:client": "cd client && npm run dev",
         "dev": "npm run dev:client",
+        "build": "cd client && npm install && npm run build",
+        "vercel-build": "npm run build",
         "start": "cd client && npm run preview"
     },
     "dependencies": {
