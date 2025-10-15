@@ -1,0 +1,186 @@
+:root {
+    --bg: #050d0d;
+    --text: #00ff99;
+    --green: #00ff99;
+    --accent: #00ff99;
+    --glow: 0 0 8px #00ff99, 0 0 2px #00ff99;
+}
+
+body,
+html,
+#root {
+    height: 100%;
+    margin: 0;
+    font-family: 'Architects Daughter', 'Fira Mono', 'Consolas', 'Courier New', monospace;
+    background: var(--bg);
+    color: var(--text);
+    letter-spacing: 0.5px;
+}
+
+.hacker-bg {
+    min-height: 100vh;
+    position: relative;
+    background: linear-gradient(180deg, #050d0d, #000);
+}
+
+.hacker-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.85));
+    z-index: 0;
+}
+
+.logo {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    width: 96px;
+    height: auto;
+    opacity: 0.95;
+    filter: drop-shadow(0 0 8px #00ff9950);
+    z-index: 2
+}
+
+.hacker-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 0 0 0;
+    position: relative;
+    z-index: 1;
+}
+
+.terminal {
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 6px;
+    padding: 18px 40px;
+    max-height: 68vh;
+    overflow-y: auto;
+    box-shadow: 0 0 24px #00000066;
+    margin-top: 18px;
+}
+
+/* hide scrollbar but keep scrolling */
+.terminal {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.terminal::-webkit-scrollbar {
+    display: none;
+    /* Safari and Chrome */
+}
+
+.terminal-input-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 60px 18px 60px;
+    font-size: 22px;
+}
+
+.terminal-input {
+    background: transparent;
+    color: var(--green);
+    border: none;
+    outline: none;
+    font-size: 22px;
+    font-family: 'Architects Daughter', inherit;
+    flex: 1;
+    padding: 4px 0;
+    margin-left: 8px;
+}
+
+.kali-prompt {
+    font-weight: 700;
+    font-family: inherit;
+    color: #ff4444 !important;
+}
+
+.kali-prompt * {
+    color: inherit !important;
+}
+
+.line {
+    white-space: pre-wrap;
+    font-size: 22px;
+    line-height: 1.5;
+    color: var(--green) !important;
+    font-family: 'Architects Daughter', 'Fira Mono', 'Consolas', 'Courier New', monospace;
+    text-shadow: var(--glow);
+}
+
+.hacker-glow {
+    color: var(--green) !important;
+    text-shadow: var(--glow);
+}
+
+.green {
+    color: var(--green) !important;
+}
+
+.red {
+    color: #ff6b6b !important;
+    text-shadow: 0 0 8px #ff6b6b;
+}
+
+.input-row {
+    display: flex;
+    gap: 10px;
+    margin: 0 0 18px 0;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 6px;
+    padding: 10px 16px;
+    box-shadow: 0 0 12px #00ff9950;
+}
+
+.prompt {
+    font-size: 20px;
+    font-family: inherit;
+    color: var(--green);
+    margin-right: 8px;
+    text-shadow: var(--glow);
+}
+
+.ip-input {
+    flex: 1;
+    background: transparent;
+    color: var(--green);
+    border: none;
+    border-bottom: 2px solid #00ff99;
+    padding: 8px 6px;
+    font-family: inherit;
+    font-size: 20px;
+    outline: none;
+    box-shadow: none;
+    transition: border .2s
+}
+
+.ip-input:focus {
+    border-bottom: 2px solid #fff
+}
+
+.btn {
+    background: transparent;
+    color: var(--green);
+    border: 2px solid #00ff99;
+    border-radius: 4px;
+    padding: 8px 18px;
+    font-size: 18px;
+    font-family: inherit;
+    cursor: pointer;
+    text-shadow: var(--glow);
+    box-shadow: 0 0 8px #00ff9950;
+    transition: background .2s, color .2s
+}
+
+.btn:hover {
+    background: #00ff9920;
+    color: #fff
+}
