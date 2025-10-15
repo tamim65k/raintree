@@ -1,6 +1,9 @@
 :root {
     --bg: #000000;
     --green: #00ff99;
+    --cyan: #00ffff;
+    --yellow: #ffff00;
+    --red: #ff0000;
     --window-bg: rgba(0, 20, 20, 0.95);
     --titlebar-bg: rgba(0, 30, 30, 0.9);
 }
@@ -172,6 +175,24 @@ body, html, #root {
 .terminal-scroll {
     width: 100%;
     height: 100%;
+    overflow-y: auto;
+}
+
+/* Color classes */
+.green {
+    color: var(--green) !important;
+}
+
+.cyan {
+    color: var(--cyan) !important;
+}
+
+.yellow {
+    color: var(--yellow) !important;
+}
+
+.red {
+    color: var(--red) !important;
 }
 
 /* Raintree.wiki content */
@@ -235,4 +256,214 @@ span.green {
 
 .desktop {
     animation: flicker 0.15s infinite;
+}
+
+/* IP Terminal Styles */
+.ip-terminal {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.terminal-input-form {
+    display: flex;
+    align-items: flex-start;
+    margin-top: 10px;
+    border-top: 1px solid rgba(0, 255, 153, 0.3);
+    padding-top: 10px;
+}
+
+.terminal-prompt {
+    color: var(--green);
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    line-height: 1.5;
+    white-space: nowrap;
+    margin-right: 5px;
+}
+
+.terminal-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--green);
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    caret-color: var(--green);
+    margin-top: 17px;
+}
+
+.terminal-input::placeholder {
+    color: rgba(0, 255, 153, 0.4);
+}
+
+/* Logo Window Animations */
+.logo-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.tree-logo-animated {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.tree-logo-animated svg {
+    filter: drop-shadow(0 0 15px rgba(0, 255, 153, 0.7));
+}
+
+.pulse-ring {
+    animation: pulse-ring 2s ease-out infinite;
+}
+
+@keyframes pulse-ring {
+    0%, 100% {
+        opacity: 1;
+        stroke-width: 2;
+    }
+    50% {
+        opacity: 0.3;
+        stroke-width: 4;
+        r: 100;
+    }
+}
+
+.tree-part {
+    animation: tree-glow 3s ease-in-out infinite;
+}
+
+@keyframes tree-glow {
+    0%, 100% {
+        filter: drop-shadow(0 0 5px rgba(0, 255, 153, 0.5));
+    }
+    50% {
+        filter: drop-shadow(0 0 15px rgba(0, 255, 153, 1));
+    }
+}
+
+.tree-eye {
+    animation: blink 4s infinite;
+}
+
+@keyframes blink {
+    0%, 48%, 52%, 100% {
+        r: 3;
+    }
+    50% {
+        r: 0.5;
+    }
+}
+
+.raintree-title-animated {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--green);
+    text-align: center;
+    letter-spacing: 3px;
+    text-shadow: 0 0 20px var(--green);
+    margin-top: 15px;
+    z-index: 2;
+    animation: title-pulse 2s ease-in-out infinite;
+}
+
+@keyframes title-pulse {
+    0%, 100% {
+        text-shadow: 0 0 10px var(--green);
+    }
+    50% {
+        text-shadow: 0 0 25px var(--green), 0 0 35px var(--green);
+    }
+}
+
+.binary-rain {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.binary-digit {
+    position: absolute;
+    top: -20px;
+    color: var(--green);
+    font-size: 14px;
+    animation: fall 8s linear infinite;
+    opacity: 0.3;
+}
+
+@keyframes fall {
+    0% {
+        top: -20px;
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.5;
+    }
+    90% {
+        opacity: 0.3;
+    }
+    100% {
+        top: 100%;
+        opacity: 0;
+    }
+}
+
+/* Glitch effect */
+.glitch {
+    animation: glitch 0.3s;
+}
+
+@keyframes glitch {
+    0%, 100% {
+        transform: translate(0);
+        filter: hue-rotate(0deg);
+    }
+    20% {
+        transform: translate(-3px, 2px);
+        filter: hue-rotate(90deg);
+    }
+    40% {
+        transform: translate(3px, -2px);
+        filter: hue-rotate(180deg);
+    }
+    60% {
+        transform: translate(-3px, -2px);
+        filter: hue-rotate(270deg);
+    }
+    80% {
+        transform: translate(3px, 2px);
+        filter: hue-rotate(360deg);
+    }
+}
+
+/* Hacking data color highlights */
+.terminal-line .green {
+    color: var(--green);
+    text-shadow: 0 0 5px var(--green);
+}
+
+.terminal-line .cyan {
+    color: var(--cyan);
+    text-shadow: 0 0 5px var(--cyan);
+}
+
+.terminal-line .yellow {
+    color: var(--yellow);
+    text-shadow: 0 0 5px var(--yellow);
+}
+
+.terminal-line .red {
+    color: var(--red);
+    text-shadow: 0 0 5px var(--red);
 }
