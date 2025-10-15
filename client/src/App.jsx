@@ -222,37 +222,47 @@ function IPTerminal() {
 
     const fetchIPInfo = async (ip = null) => {
         setLoading(true)
-        const targetIP = ip || 'current'
         
         try {
-            // Using ipapi.co for IP geolocation
-            const apiUrl = ip ? `https://ipapi.co/${ip}/json/` : 'https://ipapi.co/json/'
-            const response = await fetch(apiUrl)
-            const data = await response.json()
+            let response, data
+            
+            if (ip) {
+                // Lookup specific IP using /api/run
+                response = await fetch('/api/run', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ip })
+                })
+                data = await response.json()
+            } else {
+                // Get current public IP using /api/ipinfo
+                response = await fetch('/api/ipinfo')
+                data = await response.json()
+            }
 
-            if (data.error) {
+            if (data.error || !data.info) {
                 addLines([
-                    `<span class="red">Error: ${data.reason || 'Invalid IP address'}</span>`,
+                    `<span class="red">Error: ${data.error || 'Invalid IP address'}</span>`,
                     ''
                 ])
             } else {
+                const info = data.info
                 addLines([
                     `<span class="green">┌─[root@kali]─[~]</span>`,
-                    `<span class="green">└──╼ $</span> whois ${ip || data.ip}`,
+                    `<span class="green">└──╼ $</span> whois ${data.ip}`,
                     '',
                     '<span class="cyan">═══════════════════════════════════════════════════</span>',
                     `<span class="yellow">IP ADDRESS:</span>        ${data.ip}`,
-                    `<span class="yellow">HOSTNAME:</span>          ${data.org || 'N/A'}`,
-                    `<span class="yellow">COUNTRY:</span>           ${data.country_name || 'N/A'} (${data.country || 'N/A'})`,
-                    `<span class="yellow">REGION:</span>            ${data.region || 'N/A'}`,
-                    `<span class="yellow">CITY:</span>              ${data.city || 'N/A'}`,
-                    `<span class="yellow">POSTAL CODE:</span>       ${data.postal || 'N/A'}`,
-                    `<span class="yellow">COORDINATES:</span>       ${data.latitude || 'N/A'}, ${data.longitude || 'N/A'}`,
-                    `<span class="yellow">TIMEZONE:</span>          ${data.timezone || 'N/A'}`,
-                    `<span class="yellow">ISP:</span>               ${data.org || 'N/A'}`,
-                    `<span class="yellow">ASN:</span>               ${data.asn || 'N/A'}`,
-                    `<span class="yellow">CURRENCY:</span>          ${data.currency || 'N/A'}`,
-                    `<span class="yellow">LANGUAGES:</span>         ${data.languages || 'N/A'}`,
+                    `<span class="yellow">HOSTNAME:</span>          ${info.org || info.isp || 'N/A'}`,
+                    `<span class="yellow">COUNTRY:</span>           ${info.country || 'N/A'}`,
+                    `<span class="yellow">REGION:</span>            ${info.regionName || info.region || 'N/A'}`,
+                    `<span class="yellow">CITY:</span>              ${info.city || 'N/A'}`,
+                    `<span class="yellow">POSTAL CODE:</span>       ${info.zip || 'N/A'}`,
+                    `<span class="yellow">COORDINATES:</span>       ${info.lat || 'N/A'}, ${info.lon || 'N/A'}`,
+                    `<span class="yellow">TIMEZONE:</span>          ${info.timezone || 'N/A'}`,
+                    `<span class="yellow">ISP:</span>               ${info.isp || 'N/A'}`,
+                    `<span class="yellow">ORG:</span>               ${info.org || 'N/A'}`,
+                    `<span class="yellow">AS:</span>                ${info.as || 'N/A'}`,
                     '<span class="cyan">═══════════════════════════════════════════════════</span>',
                     ''
                 ])
@@ -365,24 +375,72 @@ export default function App() {
     const minimize = (id) => setWins(wins.map(w => w.id === id ? { ...w, visible: false } : w))
     const getZ = (id) => id === focused ? 1000 : 100 + id
 
-    // Grid layout: 2x2 on left, IP terminal on right, logo at top right
-    const windowHeight = window.innerHeight
-    const windowWidth = window.innerWidth
-    const gridWidth = windowWidth * 0.65
-    const gridHeight = windowHeight - 40
-    const cellWidth = gridWidth / 2
-    const cellHeight = gridHeight / 2
-    const rightColWidth = windowWidth * 0.35
-    const logoHeight = 250
+    // Responsive grid layout
+    const [dimensions, setDimensions] = useState({
+        windowHeight: window.innerHeight,
+        windowWidth: window.innerWidth
+    })
 
-    const data = [
-        { id: 1, title: 'NETWORK SCANNER', x: 20, y: 20, w: cellWidth - 30, h: cellHeight - 30 },
-        { id: 2, title: 'EXPLOIT FRAMEWORK', x: cellWidth + 10, y: 20, w: cellWidth - 30, h: cellHeight - 30 },
-        { id: 3, title: 'NETWORK MONITOR', x: 20, y: cellHeight + 10, w: cellWidth - 30, h: cellHeight - 30 },
-        { id: 4, title: 'SYSTEM MONITOR', x: cellWidth + 10, y: cellHeight + 10, w: cellWidth - 30, h: cellHeight - 30 },
-        { id: 5, title: 'IP LOOKUP TERMINAL - ROOT@KALI', x: gridWidth + 20, y: logoHeight + 30, w: rightColWidth - 40, h: gridHeight - logoHeight - 40 },
-        { id: 6, title: 'RAINTREE.WIKI', x: gridWidth + 20, y: 20, w: rightColWidth - 40, h: logoHeight },
-    ]
+    useEffect(() => {
+        const handleResize = () => {
+            setDimensions({
+                windowHeight: window.innerHeight,
+                windowWidth: window.innerWidth
+            })
+        }
+        window.addEventListener('resize', handleResize)
+        return () => window.removeEventListener('resize', handleResize)
+    }, [])
+
+    const windowHeight = dimensions.windowHeight
+    const windowWidth = dimensions.windowWidth
+    
+    // Responsive layout: stack vertically on mobile, grid on desktop
+    const isMobile = windowWidth < 768
+    const isTablet = windowWidth >= 768 && windowWidth < 1200
+    
+    let data
+    if (isMobile) {
+        // Mobile: stack all windows vertically
+        const winHeight = Math.max(250, windowHeight * 0.3)
+        data = [
+            { id: 6, title: 'RAINTREE.WIKI', x: 10, y: 10, w: windowWidth - 20, h: 200 },
+            { id: 5, title: 'IP LOOKUP TERMINAL - ROOT@KALI', x: 10, y: 220, w: windowWidth - 20, h: winHeight },
+            { id: 1, title: 'NETWORK SCANNER', x: 10, y: 220 + winHeight + 10, w: windowWidth - 20, h: winHeight },
+            { id: 2, title: 'EXPLOIT FRAMEWORK', x: 10, y: 220 + (winHeight + 10) * 2, w: windowWidth - 20, h: winHeight },
+            { id: 3, title: 'NETWORK MONITOR', x: 10, y: 220 + (winHeight + 10) * 3, w: windowWidth - 20, h: winHeight },
+            { id: 4, title: 'SYSTEM MONITOR', x: 10, y: 220 + (winHeight + 10) * 4, w: windowWidth - 20, h: winHeight },
+        ]
+    } else if (isTablet) {
+        // Tablet: 2 columns
+        const gridHeight = windowHeight - 40
+        const cellWidth = (windowWidth - 40) / 2
+        const cellHeight = gridHeight / 3
+        data = [
+            { id: 6, title: 'RAINTREE.WIKI', x: 10, y: 10, w: cellWidth - 10, h: 200 },
+            { id: 5, title: 'IP LOOKUP TERMINAL - ROOT@KALI', x: cellWidth + 10, y: 10, w: cellWidth - 20, h: 200 },
+            { id: 1, title: 'NETWORK SCANNER', x: 10, y: 220, w: cellWidth - 10, h: cellHeight - 20 },
+            { id: 2, title: 'EXPLOIT FRAMEWORK', x: cellWidth + 10, y: 220, w: cellWidth - 20, h: cellHeight - 20 },
+            { id: 3, title: 'NETWORK MONITOR', x: 10, y: 220 + cellHeight, w: cellWidth - 10, h: cellHeight - 20 },
+            { id: 4, title: 'SYSTEM MONITOR', x: cellWidth + 10, y: 220 + cellHeight, w: cellWidth - 20, h: cellHeight - 20 },
+        ]
+    } else {
+        // Desktop: 2x2 grid on left, IP terminal and logo on right
+        const gridWidth = windowWidth * 0.65
+        const gridHeight = windowHeight - 40
+        const cellWidth = gridWidth / 2
+        const cellHeight = gridHeight / 2
+        const rightColWidth = windowWidth * 0.35
+        const logoHeight = 250
+        data = [
+            { id: 1, title: 'NETWORK SCANNER', x: 20, y: 20, w: cellWidth - 30, h: cellHeight - 30 },
+            { id: 2, title: 'EXPLOIT FRAMEWORK', x: cellWidth + 10, y: 20, w: cellWidth - 30, h: cellHeight - 30 },
+            { id: 3, title: 'NETWORK MONITOR', x: 20, y: cellHeight + 10, w: cellWidth - 30, h: cellHeight - 30 },
+            { id: 4, title: 'SYSTEM MONITOR', x: cellWidth + 10, y: cellHeight + 10, w: cellWidth - 30, h: cellHeight - 30 },
+            { id: 5, title: 'IP LOOKUP TERMINAL - ROOT@KALI', x: gridWidth + 20, y: logoHeight + 30, w: rightColWidth - 40, h: gridHeight - logoHeight - 40 },
+            { id: 6, title: 'RAINTREE.WIKI', x: gridWidth + 20, y: 20, w: rightColWidth - 40, h: logoHeight },
+        ]
+    }
 
     return (
         <div className="desktop">
