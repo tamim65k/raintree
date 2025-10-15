@@ -10,9 +10,12 @@ function ipApiMiddleware() {
                 if (!req.url.startsWith('/api/')) return next()
                 try {
                     if (req.url === '/api/ipinfo' && req.method === 'GET') {
-                        const r1 = await fetch('https://api.ipify.org?format=json')
-                        const j1 = await r1.json()
-                        const ip = j1.ip
+                        // Get client IP from request headers
+                        const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() 
+                                || req.headers['x-real-ip'] 
+                                || req.socket.remoteAddress 
+                                || '127.0.0.1'
+                        
                         const r2 = await fetch(`http://ip-api.com/json/${encodeURIComponent(ip)}`)
                         const info = await r2.json()
                         res.setHeader('content-type', 'application/json')
