@@ -219,7 +219,14 @@ function IPTerminal() {
     const inputRef = useRef(null)
 
     useEffect(() => {
-        // Get current public IP on mount
+        // Show welcome message and get current public IP on mount
+        addLines([
+            '<span class="cyan">═══════════════════════════════════════════════════</span>',
+            '<span class="green bold">IP LOOKUP TERMINAL - INITIALIZING...</span>',
+            '<span class="yellow">Fetching your public IP address...</span>',
+            '<span class="cyan">═══════════════════════════════════════════════════</span>',
+            ''
+        ])
         fetchIPInfo()
     }, [])
 
@@ -256,11 +263,13 @@ function IPTerminal() {
                 ])
             } else {
                 const info = data.info
+                const isOwnIP = !ip // If no IP was provided, this is the user's own IP
                 addLines([
                     `<span class="kali-prompt"><span class="red bold">(root💀HackWare-Kali)</span><span class="cyan">-[~]</span></span>`,
                     `<span class="red bold">#</span> whois ${data.ip}`,
                     '',
                     '<span class="cyan">═══════════════════════════════════════════════════</span>',
+                    isOwnIP ? '<span class="green bold">YOUR PUBLIC IP INFORMATION:</span>' : '<span class="yellow bold">IP LOOKUP RESULT:</span>',
                     `<span class="yellow">IP ADDRESS:</span>        ${data.ip}`,
                     `<span class="yellow">HOSTNAME:</span>          ${info.org || info.isp || 'N/A'}`,
                     `<span class="yellow">COUNTRY:</span>           ${info.country || 'N/A'}`,
