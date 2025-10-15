@@ -1,24 +1,153 @@
-IP Terminal App
+# Raintree.wiki - Hacker-Themed Plan Tracker
 
-This project is a small Vite + React frontend and Express backend that displays a Windows-terminal-like UI and shows your IP in green. It prefers to run the local IP_Rover tool if you place it under `tools/IP_Rover` (see below). On Windows PowerShell.
+A cyberpunk-style personal plan tracking system with IP lookup tools and network monitoring displays.
 
-Quick steps:
+## Features
 
-1. Clone or copy IP_Rover into this repository under `tools/IP_Rover`.
-   - Example (PowerShell):
+### 🔐 User System
+- Password-only authentication
+- Unique password storage in Supabase
+- Persistent user sessions
 
-    git clone https://github.com/Cyber-Dioxide/IP_Rover tools/IP_Rover
+### 📊 Plan Management
+- Create custom plans (daily habits, projects, study plans, etc.)
+- Set start and end dates with target values
+- Track progress with percentage completion
+- Visual progress graphs
+- Daily progress logging
 
-2. Install root deps and client deps:
+### 📈 Dashboard
+- Overview of all active plans
+- Total progress statistics
+- Streak tracking (consecutive days with updates)
+- Quick access to create new plans
 
-    cd 'C:\Users\mythz\Desktop\New folder'
-    npm install
-    cd client; npm install
+### 🌐 Network Tools
+- IP lookup terminal with detailed information
+- Live network scanner simulation
+- Exploit framework display
+- Network monitor
+- System monitor
 
-3. Start the servers (runs both server and client concurrently):
+### 🎨 Design
+- Full hacker/cyberpunk theme
+- Matrix-style green terminal aesthetics
+- Custom star cursor
+- Glitch effects and animations
+- Fully responsive (mobile, tablet, desktop)
 
-    npm run dev
+## Setup
 
-Notes:
-- The backend will try to run `python tools/IP_Rover/ip_rover.py`. Ensure Python is installed and available in PATH or set the `PYTHON` env var.
-- If IP_Rover is not present, the server falls back to calling a public IP API (api.ipify.org).
+### 1. Install Dependencies
+
+```bash
+npm install
+cd client && npm install
+```
+
+### 2. Configure Supabase
+
+Create a Supabase project and run the SQL from `SUPABASE_SETUP.sql` to create the necessary tables:
+- `users` - User accounts
+- `plans` - User plans
+- `progress` - Daily progress tracking
+
+### 3. Environment Variables
+
+The `.env` file in the `client` directory is already configured with the Supabase credentials:
+
+```env
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+### 4. Run Development Server
+
+```bash
+npm run dev
+```
+
+This will start the Vite development server with the IP lookup API middleware.
+
+### 5. Build for Production
+
+```bash
+npm run build
+```
+
+The built files will be in `client/dist`.
+
+## Project Structure
+
+```
+/workspace
+├── client/                 # React frontend
+│   ├── src/
+│   │   ├── App.jsx        # Main application with windows
+│   │   ├── AuthWindow.jsx # Login/Signup component
+│   │   ├── Dashboard.jsx  # User dashboard
+│   │   ├── PlanCreator.jsx # Plan creation form
+│   │   ├── PlanTracker.jsx # Plan tracking with graphs
+│   │   ├── supabaseClient.js # Supabase configuration
+│   │   ├── styles.css     # All styling
+│   │   └── main.jsx       # Entry point
+│   ├── vite.config.js     # Vite config with API middleware
+│   └── package.json
+├── index.js               # Express backend for production
+├── SUPABASE_SETUP.sql     # Database schema
+└── package.json           # Root package.json
+
+```
+
+## Usage
+
+1. **Access the Application**: Open the app in your browser
+2. **Create Account**: Click "USER SYSTEM" button on the logo window
+3. **Set Password**: Create a unique password (this is your login credential)
+4. **Create Plans**: Use the dashboard to create new plans
+5. **Track Progress**: Click on any plan to view details and add daily progress
+6. **Monitor Streaks**: Keep your streak alive by updating plans daily!
+
+## Technologies
+
+- **Frontend**: React 18, Vite
+- **Backend**: Express.js (for production IP API)
+- **Database**: Supabase (PostgreSQL)
+- **Charts**: Recharts
+- **Styling**: Custom CSS with hacker theme
+
+## Features in Detail
+
+### Plan Types
+- Daily habits
+- Projects
+- Study plans
+- Fitness goals
+- Reading challenges
+- Skill development
+- Custom (other)
+
+### Progress Tracking
+- Add text descriptions of daily progress
+- Automatic progress percentage updates
+- Visual graphs showing progress over time
+- Historical log of all updates
+
+### Notifications (Future Enhancement)
+- Daily reminders for plan updates
+- Weekly/monthly progress summaries
+- Email notifications via Supabase triggers
+
+## Deployment
+
+The project is configured for Vercel deployment with the included `vercel.json` file.
+
+```bash
+vercel deploy
+```
+
+Make sure to set the Supabase environment variables in your Vercel project settings.
+
+## License
+
+MIT

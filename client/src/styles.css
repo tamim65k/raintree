@@ -529,3 +529,715 @@ span.green {
 @media (min-width: 1200px) {
     /* Desktop styles are the defaults */
 }
+
+/* ============================================
+   USER SYSTEM STYLES
+   ============================================ */
+
+/* Auth Window */
+.auth-container {
+    padding: 20px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-header {
+    margin-bottom: 30px;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.auth-form {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.auth-mode-selector {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.mode-btn {
+    flex: 1;
+    padding: 10px;
+    background: transparent;
+    border: 1px solid var(--cyan);
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+}
+
+.mode-btn:hover {
+    background: rgba(0, 255, 255, 0.1);
+}
+
+.mode-btn.active {
+    background: rgba(0, 255, 255, 0.2);
+    border-color: var(--green);
+}
+
+.auth-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.auth-field label {
+    font-size: 14px;
+}
+
+.auth-input {
+    background: rgba(0, 30, 30, 0.5);
+    border: 1px solid var(--green);
+    color: var(--green);
+    padding: 10px;
+    font-family: 'Courier New', monospace;
+    font-size: 15px;
+    outline: none;
+    transition: all 0.3s;
+}
+
+.auth-input:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+.auth-input::placeholder {
+    color: rgba(0, 255, 153, 0.4);
+}
+
+.auth-error {
+    padding: 10px;
+    background: rgba(255, 0, 0, 0.1);
+    border: 1px solid var(--red);
+}
+
+.auth-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+}
+
+.auth-btn {
+    flex: 1;
+    padding: 12px;
+    background: transparent;
+    border: 1px solid var(--green);
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.auth-btn:hover:not(:disabled) {
+    background: rgba(0, 255, 153, 0.1);
+    box-shadow: 0 0 10px rgba(0, 255, 153, 0.3);
+}
+
+.auth-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.auth-btn.primary {
+    border-color: var(--green);
+}
+
+.auth-btn.secondary {
+    border-color: var(--red);
+}
+
+.auth-info {
+    padding: 10px;
+    background: rgba(0, 255, 255, 0.05);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    font-size: 13px;
+}
+
+/* Dashboard */
+.dashboard {
+    padding: 20px;
+    height: 100%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.dashboard-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.dashboard-header {
+    font-size: 15px;
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+.stat-card {
+    padding: 15px;
+    background: rgba(0, 30, 30, 0.5);
+    border: 1px solid var(--green);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s;
+}
+
+.stat-card:hover {
+    border-color: var(--cyan);
+    box-shadow: 0 0 15px rgba(0, 255, 153, 0.3);
+}
+
+.stat-label {
+    font-size: 12px;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.dashboard-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    padding: 12px 20px;
+    background: transparent;
+    border: 1px solid var(--green);
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    transition: all 0.3s;
+    flex: 1;
+    min-width: 200px;
+}
+
+.action-btn:hover:not(:disabled) {
+    background: rgba(0, 255, 153, 0.1);
+    box-shadow: 0 0 10px rgba(0, 255, 153, 0.3);
+}
+
+.action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.action-btn.primary {
+    border-color: var(--green);
+}
+
+.action-btn.secondary {
+    border-color: var(--yellow);
+}
+
+.plans-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.section-header {
+    font-size: 16px;
+    text-align: center;
+    padding: 10px;
+    border-bottom: 1px solid var(--cyan);
+}
+
+.empty-state {
+    padding: 40px 20px;
+    text-align: center;
+    border: 1px dashed rgba(255, 255, 0, 0.5);
+}
+
+.plans-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.plan-card {
+    padding: 15px;
+    background: rgba(0, 30, 30, 0.5);
+    border: 1px solid var(--green);
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.plan-card:hover {
+    border-color: var(--cyan);
+    box-shadow: 0 0 15px rgba(0, 255, 153, 0.3);
+    transform: translateX(5px);
+}
+
+.plan-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.plan-name {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.plan-type {
+    font-size: 12px;
+    padding: 4px 8px;
+    border: 1px solid var(--cyan);
+}
+
+.plan-description {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.plan-progress {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 20px;
+    background: rgba(0, 30, 30, 0.8);
+    border: 1px solid var(--green);
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-bar.large {
+    height: 30px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green), var(--cyan));
+    transition: width 0.5s ease;
+    box-shadow: 0 0 10px rgba(0, 255, 153, 0.5);
+}
+
+.progress-text {
+    font-size: 14px;
+    min-width: 50px;
+    text-align: right;
+}
+
+.plan-dates {
+    font-size: 13px;
+}
+
+/* Plan Creator */
+.plan-creator {
+    padding: 20px;
+    height: 100%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.creator-header {
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.creator-form {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-field label {
+    font-size: 14px;
+}
+
+.form-input,
+.form-textarea,
+.form-select {
+    background: rgba(0, 30, 30, 0.5);
+    border: 1px solid var(--green);
+    color: var(--green);
+    padding: 10px;
+    font-family: 'Courier New', monospace;
+    font-size: 15px;
+    outline: none;
+    transition: all 0.3s;
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.form-select {
+    cursor: pointer;
+}
+
+.form-select option {
+    background: rgba(0, 30, 30, 0.95);
+    color: var(--green);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.form-error {
+    padding: 10px;
+    background: rgba(255, 0, 0, 0.1);
+    border: 1px solid var(--red);
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+}
+
+/* Plan Tracker */
+.plan-tracker {
+    padding: 20px;
+    height: 100%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.tracker-header {
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.plan-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+    background: rgba(0, 30, 30, 0.5);
+    border: 1px solid var(--green);
+}
+
+.info-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.info-row > span:first-child {
+    min-width: 120px;
+}
+
+.progress-overview {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+    background: rgba(0, 30, 30, 0.5);
+    border: 1px solid var(--cyan);
+}
+
+.chart-section {
+    padding: 15px;
+    background: rgba(0, 30, 30, 0.5);
+    border: 1px solid var(--green);
+}
+
+.add-progress-section {
+    padding: 15px;
+    background: rgba(0, 30, 30, 0.5);
+    border: 1px solid var(--green);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.progress-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.progress-input {
+    background: rgba(0, 30, 30, 0.5);
+    border: 1px solid var(--green);
+    color: var(--green);
+    padding: 10px;
+    font-family: 'Courier New', monospace;
+    font-size: 15px;
+    outline: none;
+    transition: all 0.3s;
+    resize: vertical;
+}
+
+.progress-input:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+.progress-history {
+    padding: 15px;
+    background: rgba(0, 30, 30, 0.5);
+    border: 1px solid var(--green);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.progress-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.progress-entry {
+    padding: 10px;
+    background: rgba(0, 40, 40, 0.5);
+    border-left: 3px solid var(--green);
+}
+
+.entry-date {
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+
+.entry-description {
+    font-size: 14px;
+}
+
+.tracker-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* User System Button */
+.user-system-btn {
+    margin-top: 15px;
+    padding: 12px 24px;
+    background: transparent;
+    border: 2px solid var(--green);
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    font-size: 16px;
+    transition: all 0.3s;
+    z-index: 3;
+    position: relative;
+}
+
+.user-system-btn:hover {
+    background: rgba(0, 255, 153, 0.2);
+    box-shadow: 0 0 20px rgba(0, 255, 153, 0.5);
+    transform: scale(1.05);
+}
+
+/* Notification Manager */
+.notification-manager {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.notification-header {
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.notification-settings {
+    padding: 15px;
+    background: rgba(0, 30, 30, 0.5);
+    border: 1px solid var(--green);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.settings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.setting-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: rgba(0, 40, 40, 0.5);
+    border: 1px solid rgba(0, 255, 153, 0.3);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.setting-item:hover {
+    border-color: var(--cyan);
+    background: rgba(0, 40, 40, 0.8);
+}
+
+.setting-checkbox {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--green);
+    cursor: pointer;
+}
+
+.notifications-list {
+    padding: 15px;
+    background: rgba(0, 30, 30, 0.5);
+    border: 1px solid var(--cyan);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.notification-items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.notification-item {
+    padding: 15px;
+    background: rgba(0, 40, 40, 0.5);
+    border-left: 3px solid var(--cyan);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s;
+    animation: slideIn 0.3s ease-out;
+}
+
+.notification-item.warning {
+    border-left-color: var(--yellow);
+    background: rgba(40, 40, 0, 0.2);
+}
+
+.notification-item:hover {
+    background: rgba(0, 40, 40, 0.8);
+    transform: translateX(5px);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.notification-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.dismiss-btn {
+    width: 30px;
+    height: 30px;
+    background: transparent;
+    border: 1px solid var(--red);
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.dismiss-btn:hover {
+    background: rgba(255, 0, 0, 0.2);
+    transform: scale(1.1);
+}
+
+.notification-info {
+    padding: 15px;
+    background: rgba(0, 30, 30, 0.5);
+    border: 1px solid rgba(255, 255, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.info-text {
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+/* Responsive adjustments for new components */
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .action-btn {
+        min-width: 100%;
+    }
+    
+    .auth-actions {
+        flex-direction: column;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .tracker-actions {
+        flex-direction: column;
+    }
+    
+    .notification-content {
+        font-size: 13px;
+    }
+}

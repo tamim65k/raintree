@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
+import AuthWindow from './AuthWindow'
+import Dashboard from './Dashboard'
 
 function Window({ id, title, children, x, y, width, height, onClose, onMinimize, zIndex, onFocus }) {
     const [pos, setPos] = useState({ x, y })
@@ -318,7 +320,7 @@ function IPTerminal() {
 }
 
 // Logo window with hacking animation
-function LogoWindow() {
+function LogoWindow({ onUserSystemClick }) {
     const [glitch, setGlitch] = useState(false)
 
     useEffect(() => {
@@ -347,6 +349,9 @@ function LogoWindow() {
                 </svg>
             </div>
             <div className="raintree-title-animated">RAINTREE.WIKI</div>
+            <button className="user-system-btn" onClick={onUserSystemClick}>
+                <span className="green">► USER SYSTEM</span>
+            </button>
             <div className="binary-rain">
                 {Array(20).fill('').map((_, i) => (
                     <span key={i} className="binary-digit" style={{ left: `${i * 5}%`, animationDelay: `${Math.random() * 2}s` }}>
@@ -359,8 +364,19 @@ function LogoWindow() {
 }
 
 export default function App() {
-    const [wins, setWins] = useState([1, 2, 3, 4, 5, 6].map(id => ({ id, visible: true })))
+    const [wins, setWins] = useState([1, 2, 3, 4, 5, 6, 7].map(id => ({ id, visible: true })))
     const [focused, setFocused] = useState(5)
+    const [user, setUser] = useState(null)
+    const [showAuth, setShowAuth] = useState(false)
+
+    // Check for existing session on mount
+    useEffect(() => {
+        const userId = localStorage.getItem('user_id')
+        const userPassword = localStorage.getItem('user_password')
+        if (userId && userPassword) {
+            setUser({ id: userId, password: userPassword })
+        }
+    }, [])
 
     useEffect(() => {
         const updateCursor = (e) => {
@@ -371,9 +387,46 @@ export default function App() {
         return () => document.removeEventListener('mousemove', updateCursor)
     }, [])
 
-    const close = (id) => setWins(wins.map(w => w.id === id ? { ...w, visible: false } : w))
+    const close = (id) => {
+        if (id === 7) {
+            setShowAuth(false)
+        }
+        setWins(wins.map(w => w.id === id ? { ...w, visible: false } : w))
+    }
     const minimize = (id) => setWins(wins.map(w => w.id === id ? { ...w, visible: false } : w))
     const getZ = (id) => id === focused ? 1000 : 100 + id
+
+    const handleAuthSuccess = (userData) => {
+        setUser(userData)
+        setShowAuth(false)
+        close(7)
+    }
+
+    const handleLogout = () => {
+        localStorage.removeItem('user_id')
+        localStorage.removeItem('user_password')
+        setUser(null)
+    }
+
+    const openUserSystem = () => {
+        if (user) {
+            // User already logged in, open dashboard in window 7
+            setWins(wins.map(w => w.id === 7 ? { ...w, visible: true } : w))
+            setFocused(7)
+        } else {
+            // Show auth
+            setShowAuth(true)
+            setWins(wins.map(w => w.id === 7 ? { ...w, visible: true } : w))
+            setFocused(7)
+        }
+    }
+
+    // Add user system button to logo window
+    const UserSystemButton = () => (
+        <button className="user-system-btn" onClick={openUserSystem}>
+            <span className="green">{user ? '[DASHBOARD]' : '[USER SYSTEM]'}</span>
+        </button>
+    )
 
     // Responsive grid layout
     const [dimensions, setDimensions] = useState({
@@ -406,10 +459,11 @@ export default function App() {
         data = [
             { id: 6, title: 'RAINTREE.WIKI', x: 10, y: 10, w: windowWidth - 20, h: 200 },
             { id: 5, title: 'IP LOOKUP TERMINAL - ROOT@KALI', x: 10, y: 220, w: windowWidth - 20, h: winHeight },
-            { id: 1, title: 'NETWORK SCANNER', x: 10, y: 220 + winHeight + 10, w: windowWidth - 20, h: winHeight },
-            { id: 2, title: 'EXPLOIT FRAMEWORK', x: 10, y: 220 + (winHeight + 10) * 2, w: windowWidth - 20, h: winHeight },
-            { id: 3, title: 'NETWORK MONITOR', x: 10, y: 220 + (winHeight + 10) * 3, w: windowWidth - 20, h: winHeight },
-            { id: 4, title: 'SYSTEM MONITOR', x: 10, y: 220 + (winHeight + 10) * 4, w: windowWidth - 20, h: winHeight },
+            { id: 7, title: user ? 'USER DASHBOARD' : 'USER SYSTEM - AUTHENTICATE', x: 10, y: 220 + winHeight + 10, w: windowWidth - 20, h: winHeight },
+            { id: 1, title: 'NETWORK SCANNER', x: 10, y: 220 + (winHeight + 10) * 2, w: windowWidth - 20, h: winHeight },
+            { id: 2, title: 'EXPLOIT FRAMEWORK', x: 10, y: 220 + (winHeight + 10) * 3, w: windowWidth - 20, h: winHeight },
+            { id: 3, title: 'NETWORK MONITOR', x: 10, y: 220 + (winHeight + 10) * 4, w: windowWidth - 20, h: winHeight },
+            { id: 4, title: 'SYSTEM MONITOR', x: 10, y: 220 + (winHeight + 10) * 5, w: windowWidth - 20, h: winHeight },
         ]
     } else if (isTablet) {
         // Tablet: 2 columns
@@ -419,13 +473,14 @@ export default function App() {
         data = [
             { id: 6, title: 'RAINTREE.WIKI', x: 10, y: 10, w: cellWidth - 10, h: 200 },
             { id: 5, title: 'IP LOOKUP TERMINAL - ROOT@KALI', x: cellWidth + 10, y: 10, w: cellWidth - 20, h: 200 },
-            { id: 1, title: 'NETWORK SCANNER', x: 10, y: 220, w: cellWidth - 10, h: cellHeight - 20 },
-            { id: 2, title: 'EXPLOIT FRAMEWORK', x: cellWidth + 10, y: 220, w: cellWidth - 20, h: cellHeight - 20 },
-            { id: 3, title: 'NETWORK MONITOR', x: 10, y: 220 + cellHeight, w: cellWidth - 10, h: cellHeight - 20 },
-            { id: 4, title: 'SYSTEM MONITOR', x: cellWidth + 10, y: 220 + cellHeight, w: cellWidth - 20, h: cellHeight - 20 },
+            { id: 7, title: user ? 'USER DASHBOARD' : 'USER SYSTEM - AUTHENTICATE', x: 10, y: 220, w: windowWidth - 20, h: 400 },
+            { id: 1, title: 'NETWORK SCANNER', x: 10, y: 630, w: cellWidth - 10, h: cellHeight - 20 },
+            { id: 2, title: 'EXPLOIT FRAMEWORK', x: cellWidth + 10, y: 630, w: cellWidth - 20, h: cellHeight - 20 },
+            { id: 3, title: 'NETWORK MONITOR', x: 10, y: 630 + cellHeight, w: cellWidth - 10, h: cellHeight - 20 },
+            { id: 4, title: 'SYSTEM MONITOR', x: cellWidth + 10, y: 630 + cellHeight, w: cellWidth - 20, h: cellHeight - 20 },
         ]
     } else {
-        // Desktop: 2x2 grid on left, IP terminal and logo on right
+        // Desktop: 2x2 grid on left, IP terminal and logo on right, user system overlay
         const gridWidth = windowWidth * 0.65
         const gridHeight = windowHeight - 40
         const cellWidth = gridWidth / 2
@@ -439,6 +494,7 @@ export default function App() {
             { id: 4, title: 'SYSTEM MONITOR', x: cellWidth + 10, y: cellHeight + 10, w: cellWidth - 30, h: cellHeight - 30 },
             { id: 5, title: 'IP LOOKUP TERMINAL - ROOT@KALI', x: gridWidth + 20, y: logoHeight + 30, w: rightColWidth - 40, h: gridHeight - logoHeight - 40 },
             { id: 6, title: 'RAINTREE.WIKI', x: gridWidth + 20, y: 20, w: rightColWidth - 40, h: logoHeight },
+            { id: 7, title: user ? 'USER DASHBOARD' : 'USER SYSTEM - AUTHENTICATE', x: windowWidth / 2 - 400, y: 50, w: 800, h: windowHeight - 100 },
         ]
     }
 
@@ -463,9 +519,15 @@ export default function App() {
                         onFocus={() => setFocused(w.id)}
                     >
                         {w.id === 6 ? (
-                            <LogoWindow />
+                            <LogoWindow onUserSystemClick={openUserSystem} />
                         ) : w.id === 5 ? (
                             <IPTerminal />
+                        ) : w.id === 7 ? (
+                            user ? (
+                                <Dashboard user={user} onLogout={handleLogout} />
+                            ) : (
+                                <AuthWindow onSuccess={handleAuthSuccess} onClose={() => close(7)} />
+                            )
                         ) : (
                             <HackingTerminal windowId={w.id} />
                         )}
