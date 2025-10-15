@@ -25,10 +25,12 @@ body, html, #root {
 
 .desktop {
     width: 100vw;
-    height: 100vh;
+    min-height: 100vh;
     position: relative;
     background: #000000;
     cursor: none;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 /* Custom cursor - 4-pointed star */
@@ -88,7 +90,7 @@ body, html, #root {
 
 .window-title {
     color: var(--green);
-    font-size: 13px;
+    font-size: 16px;
     font-weight: bold;
     letter-spacing: 0.5px;
 }
@@ -99,13 +101,13 @@ body, html, #root {
 }
 
 .window-btn {
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
     border: 1px solid var(--green);
     background: transparent;
     color: var(--green);
     cursor: pointer;
-    font-size: 11px;
+    font-size: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -141,7 +143,7 @@ body, html, #root {
     overflow-y: auto;
     overflow-x: hidden;
     padding: 12px;
-    font-size: 13px;
+    font-size: 16px;
     line-height: 1.6;
     scrollbar-width: thin;
     scrollbar-color: var(--green) transparent;
@@ -163,7 +165,7 @@ body, html, #root {
 .terminal-line {
     color: var(--green);
     font-family: 'Courier New', monospace;
-    font-size: 12px;
+    font-size: 15px;
     line-height: 1.5;
     margin-bottom: 2px;
 }
@@ -276,7 +278,7 @@ span.green {
 .terminal-prompt {
     color: var(--green);
     font-family: 'Courier New', monospace;
-    font-size: 12px;
+    font-size: 15px;
     line-height: 1.5;
     white-space: nowrap;
     margin-right: 5px;
@@ -289,7 +291,7 @@ span.green {
     outline: none;
     color: var(--green);
     font-family: 'Courier New', monospace;
-    font-size: 12px;
+    font-size: 15px;
     caret-color: var(--green);
     margin-top: 17px;
 }
@@ -363,7 +365,7 @@ span.green {
 }
 
 .raintree-title-animated {
-    font-size: 24px;
+    font-size: 28px;
     font-weight: bold;
     color: var(--green);
     text-align: center;
@@ -397,7 +399,7 @@ span.green {
     position: absolute;
     top: -20px;
     color: var(--green);
-    font-size: 14px;
+    font-size: 16px;
     animation: fall 8s linear infinite;
     opacity: 0.3;
 }
@@ -466,4 +468,64 @@ span.green {
 .terminal-line .red {
     color: var(--red);
     text-shadow: 0 0 5px var(--red);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .window {
+        min-height: 250px;
+    }
+    
+    .window-title {
+        font-size: 14px;
+    }
+    
+    .window-content {
+        font-size: 14px;
+    }
+    
+    .terminal-line {
+        font-size: 13px;
+    }
+    
+    .terminal-prompt,
+    .terminal-input {
+        font-size: 13px;
+    }
+    
+    .raintree-title-animated {
+        font-size: 20px;
+    }
+    
+    .tree-logo-animated svg {
+        width: 100px;
+        height: 100px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1199px) {
+    .window-title {
+        font-size: 15px;
+    }
+    
+    .window-content {
+        font-size: 15px;
+    }
+    
+    .terminal-line {
+        font-size: 14px;
+    }
+    
+    .terminal-prompt,
+    .terminal-input {
+        font-size: 14px;
+    }
+    
+    .raintree-title-animated {
+        font-size: 24px;
+    }
+}
+
+@media (min-width: 1200px) {
+    /* Desktop styles are the defaults */
 }
