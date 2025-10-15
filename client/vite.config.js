@@ -51,4 +51,10 @@ function ipApiMiddleware() {
 
 export default defineConfig({
     plugins: [react(), ipApiMiddleware()],
+    base: '/',
+    build: {
+        outDir: 'dist',
+        assetsDir: 'assets',
+        emptyOutDir: true
+    }
 })
