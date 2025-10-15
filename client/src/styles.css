@@ -14,6 +14,16 @@
     box-sizing: border-box;
 }
 
+/* Hide all scrollbars globally */
+* {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+    display: none;
+}
+
 body, html, #root {
     height: 100%;
     margin: 0;
@@ -187,21 +197,6 @@ body, html, #root {
     padding: 12px;
     font-size: 16px;
     line-height: 1.6;
-    scrollbar-width: thin;
-    scrollbar-color: var(--green) transparent;
-}
-
-.window-content::-webkit-scrollbar {
-    width: 8px;
-}
-
-.window-content::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.window-content::-webkit-scrollbar-thumb {
-    background: var(--green);
-    border-radius: 4px;
 }
 
 .terminal-line {
@@ -236,7 +231,62 @@ body, html, #root {
 }
 
 .red {
-    color: var(--red) !important;
+    color: #ff3333 !important;
+}
+
+/* Bold text support */
+.bold {
+    font-weight: bold;
+}
+
+.red.bold {
+    color: #ff3333 !important;
+    font-weight: bold;
+    text-shadow: 0 0 8px rgba(255, 51, 51, 0.6);
+}
+
+.cyan.bold {
+    color: var(--cyan) !important;
+    font-weight: bold;
+}
+
+.red.bold {
+    color: #ff3333 !important;
+    font-weight: bold;
+    text-shadow: 0 0 8px rgba(255, 51, 51, 0.6);
+}
+
+.cyan.bold {
+    color: var(--cyan) !important;
+    font-weight: bold;
+}
+
+.kali-prompt {
+    font-family: 'Courier New', monospace;
+    font-size: 15px;
+    line-height: 1.5;
+    white-space: nowrap;
+}
+
+.terminal-input-form {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 10px;
+    border-top: 1px solid rgba(0, 255, 153, 0.3);
+    padding-top: 10px;
+}
+
+.terminal-prompt-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.terminal-input-line {
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
 /* Raintree.wiki content */
@@ -310,11 +360,34 @@ span.green {
 }
 
 .terminal-input-form {
-    display: flex;
-    align-items: flex-start;
     margin-top: 10px;
     border-top: 1px solid rgba(0, 255, 153, 0.3);
     padding-top: 10px;
+}
+
+.terminal-prompt-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.kali-prompt-line {
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
+.kali-prompt {
+    font-family: 'Courier New', monospace;
+    font-size: 15px;
+    line-height: 1.5;
+    white-space: nowrap;
+}
+
+.terminal-input-line {
+    display: flex;
+    align-items: center;
+    gap: 0;
 }
 
 .terminal-prompt {
@@ -335,7 +408,9 @@ span.green {
     font-family: 'Courier New', monospace;
     font-size: 15px;
     caret-color: var(--green);
-    margin-top: 17px;
+    line-height: 1.5;
+    padding: 0;
+    margin: 0;
 }
 
 .terminal-input::placeholder {

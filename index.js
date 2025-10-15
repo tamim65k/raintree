@@ -44,5 +44,11 @@ app.get('*', (req, res) => {
     else res.status(404).send('Not found');
 });
 
-const port = process.env.PORT || 5174;
-app.listen(port, () => console.log(`Server listening on ${port}`));
+// Export for Vercel serverless
+module.exports = app;
+
+// Local development server
+if (require.main === module) {
+    const port = process.env.PORT || 5174;
+    app.listen(port, () => console.log(`Server listening on ${port}`));
+}

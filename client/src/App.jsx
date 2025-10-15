@@ -257,8 +257,8 @@ function IPTerminal() {
             } else {
                 const info = data.info
                 addLines([
-                    `<span class="green">┌─[root@kali]─[~]</span>`,
-                    `<span class="green">└──╼ $</span> whois ${data.ip}`,
+                    `<span class="kali-prompt"><span class="red bold">(root💀HackWare-Kali)</span><span class="cyan">-[~]</span></span>`,
+                    `<span class="red bold">#</span> whois ${data.ip}`,
                     '',
                     '<span class="cyan">═══════════════════════════════════════════════════</span>',
                     `<span class="yellow">IP ADDRESS:</span>        ${data.ip}`,
@@ -307,20 +307,25 @@ function IPTerminal() {
                 {loading && <TerminalLine text='<span class="yellow">Loading...</span>' />}
             </div>
             <form onSubmit={handleSubmit} className="terminal-input-form">
-                <span className="terminal-prompt">
-                    <span className="green">┌─[root@kali]─[~]</span><br />
-                    <span className="green">└──╼ $ </span>
-                </span>
-                <input
-                    ref={inputRef}
-                    type="text"
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    className="terminal-input"
-                    placeholder="Enter IP address..."
-                    disabled={loading}
-                    autoFocus
-                />
+                <div className="terminal-prompt-wrapper">
+                    <div className="kali-prompt-line">
+                        <span className="green">┌─</span>
+                        <span className="kali-prompt"><span className="red bold">(root💀HackWare-Kali)</span><span className="cyan">-[~]</span></span>
+                    </div>
+                    <div className="terminal-input-line">
+                        <span className="green">└──╼ $ </span>
+                        <input
+                            ref={inputRef}
+                            type="text"
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                            className="terminal-input"
+                            placeholder="Enter IP address..."
+                            disabled={loading}
+                            autoFocus
+                        />
+                    </div>
+                </div>
             </form>
         </div>
     )
