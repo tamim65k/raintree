@@ -1514,46 +1514,796 @@ span.green {
     font-size: 13px;
 }
 
-/* Responsive adjustments for new components */
+/* ============================================
+   MOBILE-ONLY RESPONSIVE DESIGNS
+   ============================================ */
+
 @media (max-width: 768px) {
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
+    /* Desktop - Hide custom cursor on mobile for better UX */
+    .star-cursor {
+        display: none;
     }
     
-    .form-row {
-        grid-template-columns: 1fr;
+    .desktop {
+        cursor: auto;
+        padding-bottom: 20px;
     }
     
-    .action-btn {
-        min-width: 100%;
+    /* Windows - Mobile optimized */
+    .window {
+        min-height: 200px;
+        border-width: 2px;
+        box-shadow: 0 0 15px rgba(0, 255, 153, 0.4);
+    }
+    
+    .window-titlebar {
+        padding: 10px 12px;
+        touch-action: none;
+    }
+    
+    .window-title {
+        font-size: 13px;
+        letter-spacing: 0.3px;
+    }
+    
+    .window-controls {
+        gap: 8px;
+    }
+    
+    .window-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 16px;
+        border-width: 2px;
+    }
+    
+    .window-content {
+        padding: 15px;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+    
+    /* Terminal - Mobile optimized */
+    .terminal-line {
+        font-size: 12px;
+        line-height: 1.4;
+        margin-bottom: 3px;
+        word-break: break-word;
+    }
+    
+    .terminal-scroll {
+        padding-right: 5px;
+    }
+    
+    /* IP Terminal - Mobile optimized */
+    .ip-terminal {
+        height: 100%;
+        padding: 5px;
+    }
+    
+    .terminal-input-form {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top-width: 2px;
+    }
+    
+    .terminal-prompt-wrapper {
+        gap: 8px;
+    }
+    
+    .kali-prompt {
+        font-size: 12px;
+    }
+    
+    .terminal-input {
+        font-size: 13px;
+        padding: 5px 0;
+    }
+    
+    .terminal-input::placeholder {
+        font-size: 12px;
+    }
+    
+    /* Logo Window - Mobile optimized */
+    .logo-content {
+        padding: 20px 15px;
+        gap: 15px;
+        min-height: 100%;
+        justify-content: space-evenly;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .tree-logo-animated {
+        flex-shrink: 0;
+        margin-bottom: 5px;
+    }
+    
+    .tree-logo-animated svg {
+        width: 75px;
+        height: 75px;
+    }
+    
+    .raintree-title-animated {
+        font-size: 18px;
+        letter-spacing: 2px;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        flex-shrink: 0;
+    }
+    
+    .user-system-btn {
+        padding: 15px 24px;
+        font-size: 15px;
+        border-width: 2px;
+        margin-top: 10px;
+        width: 90%;
+        max-width: 300px;
+        flex-shrink: 0;
+        display: block;
+    }
+    
+    .binary-rain {
+        opacity: 0.3;
+    }
+    
+    .binary-digit {
+        font-size: 11px;
+    }
+    
+    /* Auth Window - Mobile optimized */
+    .auth-container {
+        padding: 15px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .auth-header {
+        margin-bottom: 20px;
+        font-size: 13px;
+    }
+    
+    .auth-form {
+        gap: 15px;
+    }
+    
+    .auth-mode-selector {
+        gap: 8px;
+        margin-bottom: 15px;
+    }
+    
+    .mode-btn {
+        padding: 12px 8px;
+        font-size: 12px;
+        border-width: 2px;
+    }
+    
+    .auth-field {
+        gap: 10px;
+    }
+    
+    .auth-field label {
+        font-size: 13px;
+        font-weight: bold;
+    }
+    
+    .auth-input {
+        padding: 12px;
+        font-size: 14px;
+        border-width: 2px;
+    }
+    
+    .auth-error {
+        padding: 12px;
+        font-size: 12px;
+        border-width: 2px;
     }
     
     .auth-actions {
         flex-direction: column;
+        gap: 12px;
+        margin-top: 20px;
+    }
+    
+    .auth-btn {
+        padding: 14px;
+        font-size: 13px;
+        border-width: 2px;
+        width: 100%;
+    }
+    
+    .auth-info {
+        padding: 12px;
+        font-size: 12px;
+        line-height: 1.6;
+    }
+    
+    /* Dashboard - Mobile optimized */
+    .dashboard {
+        padding: 15px;
+        gap: 15px;
+        height: 100%;
+    }
+    
+    /* Full-screen dashboard on mobile */
+    @supports (-webkit-touch-callout: none) {
+        /* iOS Safari specific */
+        .dashboard {
+            min-height: -webkit-fill-available;
+        }
+    }
+    
+    .dashboard-header {
+        font-size: 13px;
+        margin-bottom: 5px;
+        line-height: 1.6;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .stat-card {
+        padding: 12px;
+        gap: 8px;
+        border-width: 2px;
+    }
+    
+    .stat-label {
+        font-size: 11px;
+        text-align: center;
+    }
+    
+    .stat-value {
+        font-size: 20px;
+    }
+    
+    .dashboard-actions {
+        gap: 10px;
+        flex-direction: column;
+    }
+    
+    .action-btn {
+        padding: 14px 16px;
+        font-size: 13px;
+        min-width: 100%;
+        width: 100%;
+        border-width: 2px;
+    }
+    
+    .plans-section {
+        gap: 12px;
+    }
+    
+    .section-header {
+        font-size: 14px;
+        padding: 12px;
+    }
+    
+    .empty-state {
+        padding: 30px 15px;
+        font-size: 13px;
+        text-align: center;
+    }
+    
+    .plans-list {
+        gap: 12px;
+    }
+    
+    .plan-card {
+        padding: 12px;
+        gap: 10px;
+        border-width: 2px;
+    }
+    
+    .plan-card:hover {
+        transform: translateX(3px);
+    }
+    
+    .plan-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .plan-name {
+        font-size: 16px;
+        word-break: break-word;
+    }
+    
+    .plan-type {
+        font-size: 11px;
+        padding: 5px 10px;
+    }
+    
+    .plan-description {
+        font-size: 13px;
+        line-height: 1.5;
+    }
+    
+    .plan-progress {
+        flex-direction: column;
+        gap: 8px;
+        align-items: stretch;
+    }
+    
+    .progress-bar {
+        height: 25px;
+        border-width: 2px;
+    }
+    
+    .progress-text {
+        font-size: 13px;
+        text-align: center;
+    }
+    
+    .plan-dates {
+        font-size: 12px;
+    }
+    
+    /* Plan Creator - Mobile optimized */
+    .plan-creator {
+        padding: 15px;
+        gap: 15px;
+    }
+    
+    .creator-header {
+        font-size: 13px;
+        line-height: 1.6;
+    }
+    
+    .creator-form {
+        gap: 15px;
+    }
+    
+    .form-field {
+        gap: 10px;
+    }
+    
+    .form-field label {
+        font-size: 13px;
+        font-weight: bold;
+    }
+    
+    .form-input,
+    .form-textarea,
+    .form-select {
+        padding: 12px;
+        font-size: 14px;
+        border-width: 2px;
+    }
+    
+    .form-textarea {
+        min-height: 100px;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .form-error {
+        padding: 12px;
+        font-size: 12px;
+        border-width: 2px;
     }
     
     .form-actions {
         flex-direction: column;
+        gap: 12px;
+        margin-top: 20px;
+    }
+    
+    /* Plan Tracker - Mobile optimized */
+    .plan-tracker {
+        padding: 15px;
+        gap: 15px;
+    }
+    
+    .tracker-header {
+        font-size: 13px;
+        line-height: 1.6;
+    }
+    
+    .plan-info {
+        padding: 12px;
+        gap: 10px;
+        border-width: 2px;
+    }
+    
+    .info-row {
+        flex-direction: column;
+        gap: 5px;
+        font-size: 13px;
+    }
+    
+    .info-row > span:first-child {
+        min-width: auto;
+        font-weight: bold;
+    }
+    
+    .progress-overview {
+        padding: 12px;
+        gap: 10px;
+        border-width: 2px;
+    }
+    
+    .progress-bar.large {
+        height: 30px;
+    }
+    
+    .chart-section {
+        padding: 12px;
+        border-width: 2px;
+    }
+    
+    .chart-section h3 {
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+    
+    /* Make charts responsive on mobile */
+    .recharts-wrapper {
+        font-size: 11px;
+    }
+    
+    .add-progress-section {
+        padding: 12px;
+        gap: 12px;
+        border-width: 2px;
+    }
+    
+    .add-progress-section h3 {
+        font-size: 14px;
+    }
+    
+    .progress-form {
+        gap: 12px;
+    }
+    
+    .progress-input {
+        padding: 12px;
+        font-size: 14px;
+        min-height: 80px;
+        border-width: 2px;
+    }
+    
+    .progress-history {
+        padding: 12px;
+        gap: 12px;
+        border-width: 2px;
+    }
+    
+    .progress-history h3 {
+        font-size: 14px;
+    }
+    
+    .progress-list {
+        gap: 10px;
+        max-height: 250px;
+    }
+    
+    .progress-entry {
+        padding: 10px;
+        border-left-width: 3px;
+    }
+    
+    .entry-date {
+        font-size: 11px;
+        margin-bottom: 6px;
+    }
+    
+    .entry-description {
+        font-size: 13px;
+        line-height: 1.5;
     }
     
     .tracker-actions {
         flex-direction: column;
+        gap: 10px;
+    }
+    
+    /* Notification Manager - Mobile optimized */
+    .notification-manager {
+        gap: 15px;
+    }
+    
+    .notification-header {
+        font-size: 13px;
+        line-height: 1.6;
+    }
+    
+    .notification-settings {
+        padding: 12px;
+        gap: 12px;
+        border-width: 2px;
+    }
+    
+    .notification-settings h3 {
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+    
+    .settings-list {
+        gap: 10px;
+    }
+    
+    .setting-item {
+        padding: 12px;
+        gap: 12px;
+        border-width: 2px;
+        flex-wrap: wrap;
+    }
+    
+    .setting-item label {
+        font-size: 13px;
+        flex: 1;
+        min-width: 200px;
+    }
+    
+    .setting-checkbox {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .notifications-list {
+        padding: 12px;
+        gap: 12px;
+        border-width: 2px;
+    }
+    
+    .notifications-list h3 {
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+    
+    .notification-items {
+        gap: 10px;
+    }
+    
+    .notification-item {
+        padding: 12px;
+        border-left-width: 4px;
+        gap: 12px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .notification-item:hover {
+        transform: translateX(3px);
     }
     
     .notification-content {
         font-size: 13px;
+        gap: 8px;
+        width: 100%;
+    }
+    
+    .notification-content .cyan,
+    .notification-content .yellow {
+        font-size: 12px;
+        line-height: 1.5;
+    }
+    
+    .dismiss-btn {
+        width: 100%;
+        height: 40px;
+        font-size: 14px;
+        border-width: 2px;
+    }
+    
+    .notification-info {
+        padding: 12px;
+        gap: 12px;
+        border-width: 2px;
+    }
+    
+    .notification-info h3 {
+        font-size: 14px;
+    }
+    
+    .info-text {
+        font-size: 12px;
+        line-height: 1.7;
+    }
+    
+    /* File Manager - Mobile optimized */
+    .file-manager {
+        padding: 15px;
+        gap: 15px;
+    }
+    
+    .file-manager-header {
+        font-size: 13px;
+        margin-bottom: 5px;
+        line-height: 1.6;
+    }
+    
+    .file-error {
+        padding: 12px;
+        font-size: 12px;
+        border-width: 2px;
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+    
+    .error-close {
+        font-size: 20px;
+        padding: 5px;
+        align-self: flex-end;
+    }
+    
+    .file-upload-section {
+        flex-direction: column;
+        gap: 12px;
+        padding: 12px;
+        border-width: 2px;
+        align-items: stretch;
+    }
+    
+    .file-upload-btn {
+        padding: 12px 16px;
+        font-size: 13px;
+        border-width: 2px;
+        width: 100%;
+        text-align: center;
+    }
+    
+    .file-limit {
+        font-size: 11px;
+        text-align: center;
+    }
+    
+    .upload-progress {
+        padding: 12px;
+        font-size: 13px;
+        border-width: 2px;
+    }
+    
+    .files-list {
+        gap: 12px;
+    }
+    
+    .file-item {
+        padding: 12px;
+        gap: 12px;
+        border-width: 2px;
+    }
+    
+    .file-item:hover {
+        transform: translateX(3px);
+    }
+    
+    .file-item.selected {
+        border-width: 3px;
     }
     
     .file-info {
         flex-direction: column;
         align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .file-name {
+        font-size: 14px;
+        font-weight: bold;
+        min-width: auto;
+        width: 100%;
+    }
+    
+    .file-size {
+        font-size: 12px;
+        min-width: auto;
+    }
+    
+    .file-date {
+        font-size: 11px;
     }
     
     .file-actions {
         width: 100%;
+        gap: 8px;
     }
     
     .file-btn {
         flex: 1;
+        padding: 10px 12px;
+        font-size: 12px;
+        border-width: 2px;
+        min-width: 0;
+    }
+    
+    .file-edit-meta {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+    }
+    
+    .meta-input {
+        padding: 10px;
+        font-size: 13px;
+        border-width: 2px;
+        width: 100%;
+    }
+    
+    .meta-save,
+    .meta-cancel {
+        padding: 10px 15px;
+        font-size: 12px;
+        border-width: 2px;
+        flex: 1;
+    }
+    
+    .file-stats {
+        padding: 12px;
+        font-size: 12px;
+        border-width: 2px;
+    }
+    
+    /* Hacking Terminals - Mobile optimized */
+    .terminal-line .green,
+    .terminal-line .cyan,
+    .terminal-line .yellow,
+    .terminal-line .red {
+        text-shadow: 0 0 3px currentColor;
+    }
+    
+    /* Mobile touch improvements */
+    button,
+    .window-btn,
+    .action-btn,
+    .auth-btn,
+    .mode-btn,
+    .file-btn,
+    .dismiss-btn,
+    .user-system-btn {
+        -webkit-tap-highlight-color: rgba(0, 255, 153, 0.2);
+        touch-action: manipulation;
+    }
+    
+    input,
+    textarea,
+    select {
+        -webkit-tap-highlight-color: rgba(0, 255, 255, 0.2);
+        touch-action: manipulation;
+    }
+    
+    /* Improve readability on mobile */
+    .green {
+        text-shadow: 0 0 3px var(--green);
+    }
+    
+    .cyan {
+        text-shadow: 0 0 3px var(--cyan);
+    }
+    
+    .yellow {
+        text-shadow: 0 0 3px var(--yellow);
+    }
+    
+    .red {
+        text-shadow: 0 0 3px var(--red);
+    }
+    
+    /* Reduce animations on mobile for performance */
+    .desktop::before {
+        background-size: 100% 3px;
+    }
+    
+    .desktop {
+        animation: flicker 0.2s infinite;
+    }
+    
+    /* Optimize window dragging for touch */
+    .window-titlebar {
+        cursor: grab;
+    }
+    
+    .window-titlebar:active {
+        cursor: grabbing;
     }
 }

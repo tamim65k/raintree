@@ -509,15 +509,47 @@ export default function App() {
     if (isMobile) {
         // Mobile: stack all windows vertically
         const winHeight = Math.max(250, windowHeight * 0.3)
-        data = [
-            { id: 6, title: 'RAINTREE.WIKI', x: 10, y: 10, w: windowWidth - 20, h: 200 },
-            { id: 5, title: 'IP LOOKUP TERMINAL - ROOT@KALI', x: 10, y: 220, w: windowWidth - 20, h: winHeight },
-            { id: 7, title: user ? 'USER DASHBOARD' : 'USER SYSTEM - AUTHENTICATE', x: 10, y: 220 + winHeight + 10, w: windowWidth - 20, h: winHeight },
-            { id: 1, title: 'NETWORK SCANNER', x: 10, y: 220 + (winHeight + 10) * 2, w: windowWidth - 20, h: winHeight },
-            { id: 2, title: 'EXPLOIT FRAMEWORK', x: 10, y: 220 + (winHeight + 10) * 3, w: windowWidth - 20, h: winHeight },
-            { id: 3, title: 'NETWORK MONITOR', x: 10, y: 220 + (winHeight + 10) * 4, w: windowWidth - 20, h: winHeight },
-            { id: 4, title: 'SYSTEM MONITOR', x: 10, y: 220 + (winHeight + 10) * 5, w: windowWidth - 20, h: winHeight },
-        ]
+        const logoHeight = 320 // Increased to show all logo content including button
+        const ipTerminalHeight = 550 // Increased to show all IP details without scrolling
+        const gap = 10 // Consistent gap between windows
+        let currentY = 10
+        
+        // Check if User Dashboard is open
+        const isDashboardOpen = wins.find(w => w.id === 7)?.visible
+        
+        if (isDashboardOpen) {
+            // When dashboard is open, only show it and make it full height
+            data = [
+                { id: 7, title: user ? 'USER DASHBOARD' : 'USER SYSTEM - AUTHENTICATE', x: 10, y: 10, w: windowWidth - 20, h: windowHeight - 20 }
+            ]
+        } else {
+            // Normal layout when dashboard is closed
+            // Logo window
+            data = [
+                { id: 6, title: 'RAINTREE.WIKI', x: 10, y: currentY, w: windowWidth - 20, h: logoHeight },
+            ]
+            currentY += logoHeight + gap
+            
+            // IP Terminal - taller to show all IP details without scrolling
+            data.push({ id: 5, title: 'IP LOOKUP TERMINAL - ROOT@KALI', x: 10, y: currentY, w: windowWidth - 20, h: ipTerminalHeight })
+            currentY += ipTerminalHeight + gap
+            
+            // Hacking terminals (1-4) - these are always visible
+            data.push({ id: 1, title: 'NETWORK SCANNER', x: 10, y: currentY, w: windowWidth - 20, h: winHeight })
+            currentY += winHeight + gap
+            
+            data.push({ id: 2, title: 'EXPLOIT FRAMEWORK', x: 10, y: currentY, w: windowWidth - 20, h: winHeight })
+            currentY += winHeight + gap
+            
+            data.push({ id: 3, title: 'NETWORK MONITOR', x: 10, y: currentY, w: windowWidth - 20, h: winHeight })
+            currentY += winHeight + gap
+            
+            data.push({ id: 4, title: 'SYSTEM MONITOR', x: 10, y: currentY, w: windowWidth - 20, h: winHeight })
+            currentY += winHeight + gap
+            
+            // User Dashboard at the end (may be hidden)
+            data.push({ id: 7, title: user ? 'USER DASHBOARD' : 'USER SYSTEM - AUTHENTICATE', x: 10, y: currentY, w: windowWidth - 20, h: winHeight })
+        }
     } else if (isTablet) {
         // Tablet: 2 columns
         const gridHeight = windowHeight - 40
@@ -557,6 +589,13 @@ export default function App() {
             {wins.filter(w => w.visible).map(w => {
                 const cfg = data.find(d => d.id === w.id)
                 if (!cfg) return null
+                
+                // On mobile, hide all other windows when User Dashboard (id: 7) is open
+                const isDashboardOpen = isMobile && wins.find(win => win.id === 7)?.visible
+                if (isMobile && isDashboardOpen && w.id !== 7) {
+                    return null // Hide all other windows
+                }
+                
                 return (
                     <Window
                         key={w.id}
