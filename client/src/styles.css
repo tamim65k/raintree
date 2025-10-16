@@ -341,15 +341,53 @@ span.green {
     z-index: 9999;
 }
 
-/* Flicker animation */
+/* Flicker animation - enhanced */
 @keyframes flicker {
-    0% { opacity: 0.98; }
+    0% { opacity: 0.97; }
     50% { opacity: 1; }
     100% { opacity: 0.98; }
 }
 
 .desktop {
     animation: flicker 0.15s infinite;
+}
+
+/* Additional glitch on desktop background */
+.desktop.glitch {
+    animation: flicker 0.05s infinite, desktop-shake 0.3s;
+}
+
+@keyframes desktop-shake {
+    0%, 100% {
+        transform: translate(0, 0);
+    }
+    10% {
+        transform: translate(-2px, 1px);
+    }
+    20% {
+        transform: translate(2px, -1px);
+    }
+    30% {
+        transform: translate(-1px, 2px);
+    }
+    40% {
+        transform: translate(1px, -2px);
+    }
+    50% {
+        transform: translate(-2px, -1px);
+    }
+    60% {
+        transform: translate(2px, 1px);
+    }
+    70% {
+        transform: translate(-1px, -2px);
+    }
+    80% {
+        transform: translate(1px, 2px);
+    }
+    90% {
+        transform: translate(-2px, -1px);
+    }
 }
 
 /* IP Terminal Styles */
@@ -540,31 +578,135 @@ span.green {
     }
 }
 
-/* Glitch effect */
+/* Enhanced Glitch effect - More intense and frequent */
 .glitch {
-    animation: glitch 0.3s;
+    animation: glitch 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 @keyframes glitch {
     0%, 100% {
         transform: translate(0);
-        filter: hue-rotate(0deg);
+        filter: hue-rotate(0deg) brightness(1);
+        opacity: 1;
+    }
+    10% {
+        transform: translate(-5px, 3px) skew(2deg);
+        filter: hue-rotate(90deg) brightness(1.2);
+        opacity: 0.9;
     }
     20% {
-        transform: translate(-3px, 2px);
-        filter: hue-rotate(90deg);
+        transform: translate(4px, -4px) skew(-3deg);
+        filter: hue-rotate(180deg) brightness(0.8);
+        opacity: 1;
+    }
+    30% {
+        transform: translate(-3px, 2px) skew(1deg);
+        filter: hue-rotate(270deg) brightness(1.1);
+        opacity: 0.95;
     }
     40% {
-        transform: translate(3px, -2px);
-        filter: hue-rotate(180deg);
+        transform: translate(5px, -2px) skew(-2deg);
+        filter: hue-rotate(360deg) brightness(0.9);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(-4px, 4px) skew(3deg);
+        filter: hue-rotate(45deg) brightness(1.3);
+        opacity: 0.85;
     }
     60% {
-        transform: translate(-3px, -2px);
-        filter: hue-rotate(270deg);
+        transform: translate(3px, -3px) skew(-1deg);
+        filter: hue-rotate(135deg) brightness(1);
+        opacity: 1;
+    }
+    70% {
+        transform: translate(-5px, -2px) skew(2deg);
+        filter: hue-rotate(225deg) brightness(0.85);
+        opacity: 0.9;
     }
     80% {
-        transform: translate(3px, 2px);
-        filter: hue-rotate(360deg);
+        transform: translate(4px, 3px) skew(-3deg);
+        filter: hue-rotate(315deg) brightness(1.15);
+        opacity: 1;
+    }
+    90% {
+        transform: translate(-2px, -4px) skew(1deg);
+        filter: hue-rotate(180deg) brightness(0.95);
+        opacity: 0.95;
+    }
+}
+
+/* Desktop glitch effect */
+.desktop.glitch::before {
+    animation: scanline-glitch 0.3s;
+}
+
+@keyframes scanline-glitch {
+    0%, 100% {
+        background-size: 100% 4px;
+        opacity: 1;
+    }
+    25% {
+        background-size: 100% 8px;
+        opacity: 0.5;
+    }
+    50% {
+        background-size: 100% 2px;
+        opacity: 1.5;
+    }
+    75% {
+        background-size: 100% 6px;
+        opacity: 0.7;
+    }
+}
+
+/* Window glitch effect - additional distortion */
+.window.glitch {
+    box-shadow: 
+        0 0 30px rgba(0, 255, 153, 0.6),
+        -5px 0 10px rgba(255, 0, 0, 0.4),
+        5px 0 10px rgba(0, 255, 255, 0.4);
+}
+
+.window.glitch .window-titlebar {
+    animation: titlebar-glitch 0.3s;
+}
+
+@keyframes titlebar-glitch {
+    0%, 100% {
+        background: var(--titlebar-bg);
+    }
+    25% {
+        background: rgba(0, 50, 50, 0.9);
+    }
+    50% {
+        background: rgba(50, 0, 50, 0.9);
+    }
+    75% {
+        background: rgba(0, 30, 50, 0.9);
+    }
+}
+
+/* Terminal text glitch */
+.window.glitch .terminal-line {
+    animation: text-glitch 0.3s;
+}
+
+@keyframes text-glitch {
+    0%, 100% {
+        text-shadow: 0 0 5px var(--green);
+    }
+    20% {
+        text-shadow: -2px 0 5px var(--cyan), 2px 0 5px var(--red);
+    }
+    40% {
+        text-shadow: 2px 0 5px var(--yellow), -2px 0 5px var(--green);
+    }
+    60% {
+        text-shadow: -2px 0 5px var(--red), 2px 0 5px var(--cyan);
+    }
+    80% {
+        text-shadow: 2px 0 5px var(--green), -2px 0 5px var(--yellow);
     }
 }
 

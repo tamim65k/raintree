@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useMemo, useCallback, memo } from '
 import AuthWindow from './AuthWindow'
 import Dashboard from './Dashboard'
 
-function Window({ id, title, children, x, y, width, height, onClose, onMinimize, zIndex, onFocus }) {
+function Window({ id, title, children, x, y, width, height, onClose, onMinimize, zIndex, onFocus, glitch }) {
     const [pos, setPos] = useState({ x, y })
     const [drag, setDrag] = useState(false)
     const [offset, setOffset] = useState({ x: 0, y: 0 })
@@ -31,7 +31,7 @@ function Window({ id, title, children, x, y, width, height, onClose, onMinimize,
     }, [drag, offset])
 
     return (
-        <div ref={ref} className="window" style={{ left: pos.x, top: pos.y, width, height, zIndex }} onClick={onFocus}>
+        <div ref={ref} className={`window ${glitch ? 'glitch' : ''}`} style={{ left: pos.x, top: pos.y, width, height, zIndex }} onClick={onFocus}>
             <div className="window-titlebar" onMouseDown={onMouseDown}>
                 <span className="window-title">{title}</span>
                 <div className="window-controls">
@@ -342,8 +342,6 @@ function IPTerminal() {
 
 // Logo window with hacking animation
 const LogoWindow = memo(({ onUserSystemClick }) => {
-    const [glitch, setGlitch] = useState(false)
-
     // Memoize binary digits to prevent re-generation
     const binaryDigits = useMemo(() => 
         Array(15).fill('').map((_, i) => ({
@@ -354,17 +352,8 @@ const LogoWindow = memo(({ onUserSystemClick }) => {
         }))
     , [])
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setGlitch(true)
-            setTimeout(() => setGlitch(false), 150)
-        }, 4000 + Math.random() * 2000)
-
-        return () => clearInterval(interval)
-    }, [])
-
     return (
-        <div className={`logo-content ${glitch ? 'glitch' : ''}`}>
+        <div className="logo-content">
             <div className="tree-logo-animated">
                 <svg viewBox="0 0 200 200" width="70" height="70">
                     <circle cx="100" cy="100" r="95" fill="none" stroke="#00ff99" strokeWidth="2" className="pulse-ring"/>
@@ -399,6 +388,7 @@ export default function App() {
     const [focused, setFocused] = useState(5)
     const [user, setUser] = useState(null)
     const [showAuth, setShowAuth] = useState(false)
+    const [globalGlitch, setGlobalGlitch] = useState(false)
 
     // Check for existing session on mount
     useEffect(() => {
@@ -407,6 +397,16 @@ export default function App() {
         if (userId && userPassword) {
             setUser({ id: userId, password: userPassword })
         }
+    }, [])
+
+    // Global glitch effect - more frequent
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setGlobalGlitch(true)
+            setTimeout(() => setGlobalGlitch(false), 200)
+        }, 1500 + Math.random() * 1500) // Trigger every 1.5-3 seconds
+
+        return () => clearInterval(interval)
     }, [])
 
     useEffect(() => {
@@ -584,7 +584,7 @@ export default function App() {
     }
 
     return (
-        <div className="desktop">
+        <div className={`desktop ${globalGlitch ? 'glitch' : ''}`}>
             <div className="star-cursor"></div>
             {wins.filter(w => w.visible).map(w => {
                 const cfg = data.find(d => d.id === w.id)
@@ -609,6 +609,7 @@ export default function App() {
                         onClose={() => close(w.id)}
                         onMinimize={() => minimize(w.id)}
                         onFocus={() => setFocused(w.id)}
+                        glitch={globalGlitch}
                     >
                         {w.id === 6 ? (
                             <LogoWindow onUserSystemClick={openUserSystem} />
