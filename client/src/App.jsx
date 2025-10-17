@@ -608,6 +608,8 @@ export default function App() {
     const [nextHackingId, setNextHackingId] = useState(1000)
     const [isCreatingHackWindow, setIsCreatingHackWindow] = useState(false)
     const [globalGlitch, setGlobalGlitch] = useState(false)
+    const windowTimeoutsRef = useRef(new Map())
+    const windowCreationTimesRef = useRef(new Map())
 
     // Check for existing session on mount
     useEffect(() => {
@@ -650,10 +652,14 @@ export default function App() {
     // Random hacking window system
     useEffect(() => {
         const isDashboardOpen = wins.find(w => w.id === 7)?.visible
+        
         if (isDashboardOpen) {
             // Clear all hacking windows when dashboard opens
             setHackingWindows([])
             setIsCreatingHackWindow(false)
+            // Clear all timeouts
+            windowTimeoutsRef.current.forEach(timeoutId => clearTimeout(timeoutId))
+            windowTimeoutsRef.current.clear()
             return
         }
         
@@ -683,7 +689,7 @@ export default function App() {
         
         const createHackingWindow = () => {
             const message = messages[Math.floor(Math.random() * messages.length)]
-            const id = nextHackingId
+            const windowId = nextHackingId
             setNextHackingId(prev => prev + 1)
             
             const windowWidth = 400
@@ -691,8 +697,13 @@ export default function App() {
             const maxX = window.innerWidth - windowWidth - 50
             const maxY = window.innerHeight - windowHeight - 50
             
+            // Calculate typing duration (20ms per character)
+            const typingDuration = message.content.length * 20
+            // Window stays for: typing time + 2 seconds after typing completes
+            const windowLifetime = typingDuration + 2000
+            
             const hackWindow = {
-                id,
+                id: windowId,
                 title: message.title,
                 content: message.content,
                 type: message.type,
@@ -701,33 +712,99 @@ export default function App() {
                 width: windowWidth,
                 height: windowHeight,
                 visible: true,
-                glitch: false
+                glitch: false,
+                lifetime: windowLifetime
             }
             
             // Add new window (can have multiple on screen)
             setHackingWindows(prev => [...prev, hackWindow])
             
-            // Auto-close after 3 seconds
-            setTimeout(() => {
-                setHackingWindows(prev => prev.filter(w => w.id !== id))
-            }, 3000)
+            // Track creation time
+            windowCreationTimesRef.current.set(windowId, Date.now())
+            
+            // Auto-close after typing completes + 2 seconds
+            const timeoutId = setTimeout(() => {
+                setHackingWindows(prev => {
+                    const filtered = prev.filter(w => w.id !== windowId)
+                    console.log(`[AUTO-CLOSE] Window ${windowId} closed after ${windowLifetime}ms, remaining: ${filtered.length}`)
+                    return filtered
+                })
+                // Remove from tracking
+                windowTimeoutsRef.current.delete(windowId)
+                windowCreationTimesRef.current.delete(windowId)
+            }, windowLifetime)
+            
+            // Track timeout in ref for cleanup
+            windowTimeoutsRef.current.set(windowId, timeoutId)
+            console.log(`[CREATED] Window ${windowId}, lifetime: ${windowLifetime}ms, total windows: ${windowCreationTimesRef.current.size}`)
         }
         
         // Create first window after 1 second
         const initialTimeout = setTimeout(createHackingWindow, 1000)
         
-        // Create new window every 1 second
-        const interval = setInterval(createHackingWindow, 1000)
+        // Create new window every 3 seconds
+        const interval = setInterval(createHackingWindow, 2000)
         
         return () => {
             clearTimeout(initialTimeout)
             clearInterval(interval)
+            // Clear all pending timeouts
+            windowTimeoutsRef.current.forEach(timeoutId => clearTimeout(timeoutId))
+            windowTimeoutsRef.current.clear()
+            console.log('[CLEANUP] All window timeouts cleared')
         }
     }, [wins, nextHackingId, isCreatingHackWindow])
     
     const closeHackingWindow = (id) => {
+        // Clear the timeout if it exists
+        const timeoutId = windowTimeoutsRef.current.get(id)
+        if (timeoutId) {
+            clearTimeout(timeoutId)
+            windowTimeoutsRef.current.delete(id)
+            windowCreationTimesRef.current.delete(id)
+            console.log(`[MANUAL-CLOSE] Window ${id} closed manually, timeout cleared`)
+        }
         setHackingWindows(prev => prev.filter(w => w.id !== id))
     }
+    
+    // Full cleanup every 10 seconds - removes ALL windows
+    useEffect(() => {
+        console.log('[FULL-CLEANUP] 10-second cleanup timer started')
+        
+        const fullCleanupInterval = setInterval(() => {
+            console.log(`[FULL-CLEANUP] Force removing ALL windows at ${new Date().toLocaleTimeString()}`)
+            
+            // Force clear state
+            setHackingWindows([])
+            
+            // Clear all timeouts and tracking
+            windowTimeoutsRef.current.forEach(timeoutId => {
+                try {
+                    clearTimeout(timeoutId)
+                } catch (e) {
+                    console.error('Error clearing timeout:', e)
+                }
+            })
+            windowTimeoutsRef.current.clear()
+            windowCreationTimesRef.current.clear()
+            
+            // Force re-render to ensure DOM cleanup
+            setTimeout(() => {
+                setHackingWindows(prev => {
+                    if (prev.length > 0) {
+                        console.log(`[FULL-CLEANUP] Secondary cleanup removed ${prev.length} remaining windows`)
+                        return []
+                    }
+                    return prev
+                })
+            }, 100)
+        }, 10000) // Full cleanup every 10 seconds
+        
+        return () => {
+            console.log('[FULL-CLEANUP] Cleanup timer stopped')
+            clearInterval(fullCleanupInterval)
+        }
+    }, []) // Empty dependency - runs once and never resets
 
     useEffect(() => {
         let rafId = null
@@ -971,7 +1048,7 @@ export default function App() {
             {/* Hacking Alert Windows - Custom Design */}
             {hackingWindows.map(hw => (
                 <div
-                    key={hw.id}
+                    key={`hack-${hw.id}`}
                     className="hacking-alert-box"
                     style={{
                         left: `${hw.x}px`,
@@ -979,6 +1056,7 @@ export default function App() {
                         width: `${hw.width}px`,
                         zIndex: 10000 + hw.id
                     }}
+                    data-window-id={hw.id}
                 >
                     <div className="alert-box-header">
                         <span className="alert-box-title">{hw.title}</span>
