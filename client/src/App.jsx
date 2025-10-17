@@ -604,6 +604,8 @@ export default function App() {
     const [wins, setWins] = useState([1, 2, 3, 4, 5, 6, 7].map(id => ({ id, visible: id !== 7, glitch: false })))
     const [focused, setFocused] = useState(1)
     const [user, setUser] = useState(null)
+    const [showAuth, setShowAuth] = useState(false)
+    const [authKey, setAuthKey] = useState(0)
     const [hackingWindows, setHackingWindows] = useState([])
     const [nextHackingId, setNextHackingId] = useState(1000)
     const [isCreatingHackWindow, setIsCreatingHackWindow] = useState(false)
@@ -742,7 +744,7 @@ export default function App() {
         // Create first window after 1 second
         const initialTimeout = setTimeout(createHackingWindow, 1000)
         
-        // Create new window every 3 seconds
+        // Create new window every 2 seconds
         const interval = setInterval(createHackingWindow, 2000)
         
         return () => {
@@ -832,17 +834,9 @@ export default function App() {
     }, [])
 
     const close = (id) => {
+        setWins(prev => prev.map(w => w.id === id ? { ...w, visible: false } : w))
         if (id === 7) {
             setShowAuth(false)
-            // If user is logged in and closing dashboard, just hide it
-            if (user) {
-                setWins(prev => prev.map(w => w.id === id ? { ...w, visible: false } : w))
-            } else {
-                // If not logged in, close auth window
-                setWins(prev => prev.map(w => w.id === id ? { ...w, visible: false } : w))
-            }
-        } else {
-            setWins(prev => prev.map(w => w.id === id ? { ...w, visible: false } : w))
         }
     }
     const minimize = (id) => setWins(prev => prev.map(w => w.id === id ? { ...w, visible: false } : w))
@@ -864,17 +858,25 @@ export default function App() {
         localStorage.removeItem('user_id')
         localStorage.removeItem('user_password')
         setUser(null)
+        setAuthKey(prev => prev + 1) // Force AuthWindow to reset
     }
 
     const openUserSystem = () => {
+        // Hide all hacking windows when opening dashboard
+        setHackingWindows([])
+        // Clear all timeouts
+        windowTimeoutsRef.current.forEach(timeoutId => clearTimeout(timeoutId))
+        windowTimeoutsRef.current.clear()
+        windowCreationTimesRef.current.clear()
+        
         if (user) {
             // User already logged in, open dashboard in window 7
-            setWins(wins.map(w => w.id === 7 ? { ...w, visible: true } : w))
+            setWins(prev => prev.map(w => w.id === 7 ? { ...w, visible: true } : w))
             setFocused(7)
         } else {
             // Show auth
             setShowAuth(true)
-            setWins(wins.map(w => w.id === 7 ? { ...w, visible: true } : w))
+            setWins(prev => prev.map(w => w.id === 7 ? { ...w, visible: true } : w))
             setFocused(7)
         }
     }
@@ -1036,7 +1038,7 @@ export default function App() {
                             user ? (
                                 <Dashboard user={user} onLogout={handleLogout} />
                             ) : (
-                                <AuthWindow onSuccess={handleAuthSuccess} onClose={() => close(7)} />
+                                <AuthWindow key={authKey} onSuccess={handleAuthSuccess} onClose={() => close(7)} />
                             )
                         ) : (
                             <HackingTerminal windowId={w.id} />
