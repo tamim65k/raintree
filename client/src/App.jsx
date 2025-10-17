@@ -340,6 +340,221 @@ function IPTerminal() {
     )
 }
 
+// Matrix Rain Animation
+const MatrixRain = memo(() => {
+    const columns = useMemo(() => {
+        const cols = Math.floor(window.innerWidth / 20)
+        return Array(cols).fill('').map((_, i) => ({
+            id: i,
+            left: `${i * 20}px`,
+            delay: `${Math.random() * 5}s`,
+            duration: `${10 + Math.random() * 10}s`
+        }))
+    }, [])
+
+    return (
+        <div className="matrix-rain">
+            {columns.map(col => (
+                <div 
+                    key={col.id} 
+                    className="matrix-column" 
+                    style={{ 
+                        left: col.left, 
+                        animationDelay: col.delay,
+                        animationDuration: col.duration
+                    }}
+                >
+                    {Array(20).fill('').map((_, i) => (
+                        <span key={i}>{String.fromCharCode(0x30A0 + Math.random() * 96)}</span>
+                    ))}
+                </div>
+            ))}
+        </div>
+    )
+})
+
+// Scanning Lines Animation
+const ScanLines = memo(() => (
+    <div className="scan-lines-container">
+        <div className="scan-line scan-line-1"></div>
+        <div className="scan-line scan-line-2"></div>
+        <div className="scan-line scan-line-3"></div>
+    </div>
+))
+
+// Code Stream Animation
+const CodeStream = memo(() => {
+    const codeLines = useMemo(() => [
+        '> Initializing neural network...',
+        '> Loading quantum algorithms...',
+        '> Establishing secure connection...',
+        '> Decrypting data stream...',
+        '> Analyzing network topology...',
+        '> Compiling exploit modules...',
+        '> Scanning for vulnerabilities...',
+        '> Injecting payload...',
+        '> Bypassing firewall...',
+        '> Access granted...'
+    ], [])
+
+    return (
+        <div className="code-stream">
+            {codeLines.map((line, i) => (
+                <div 
+                    key={i} 
+                    className="code-line" 
+                    style={{ animationDelay: `${i * 2}s` }}
+                >
+                    <span className="green">{line}</span>
+                </div>
+            ))}
+        </div>
+    )
+})
+
+// Hexagonal Grid Background
+const HexGrid = memo(() => {
+    const hexagons = useMemo(() => {
+        const count = 15
+        return Array(count).fill('').map((_, i) => ({
+            id: i,
+            top: `${Math.random() * 100}%`,
+            left: `${Math.random() * 100}%`,
+            delay: `${Math.random() * 10}s`,
+            duration: `${15 + Math.random() * 10}s`
+        }))
+    }, [])
+
+    return (
+        <div className="hex-grid">
+            {hexagons.map(hex => (
+                <div 
+                    key={hex.id} 
+                    className="hexagon" 
+                    style={{ 
+                        top: hex.top, 
+                        left: hex.left,
+                        animationDelay: hex.delay,
+                        animationDuration: hex.duration
+                    }}
+                >
+                    <div className="hex-inner"></div>
+                </div>
+            ))}
+        </div>
+    )
+})
+
+// Binary Stream Animation
+const BinaryStream = memo(() => {
+    const streams = useMemo(() => {
+        return Array(8).fill('').map((_, i) => ({
+            id: i,
+            left: `${10 + i * 12}%`,
+            delay: `${Math.random() * 5}s`,
+            binary: Array(30).fill('').map(() => Math.random() > 0.5 ? '1' : '0').join('')
+        }))
+    }, [])
+
+    return (
+        <div className="binary-stream-bg">
+            {streams.map(stream => (
+                <div 
+                    key={stream.id} 
+                    className="binary-column-bg" 
+                    style={{ left: stream.left, animationDelay: stream.delay }}
+                >
+                    {stream.binary}
+                </div>
+            ))}
+        </div>
+    )
+})
+
+// Circuit Board Pattern
+const CircuitBoard = memo(() => {
+    const lines = useMemo(() => {
+        return Array(20).fill('').map((_, i) => ({
+            id: i,
+            type: Math.random() > 0.5 ? 'horizontal' : 'vertical',
+            position: `${Math.random() * 100}%`,
+            length: `${30 + Math.random() * 40}%`,
+            delay: `${Math.random() * 10}s`
+        }))
+    }, [])
+
+    return (
+        <div className="circuit-board">
+            {lines.map(line => (
+                <div 
+                    key={line.id} 
+                    className={`circuit-line ${line.type}`}
+                    style={{
+                        [line.type === 'horizontal' ? 'top' : 'left']: line.position,
+                        [line.type === 'horizontal' ? 'width' : 'height']: line.length,
+                        animationDelay: line.delay
+                    }}
+                />
+            ))}
+        </div>
+    )
+})
+
+// Data Packets Animation
+const DataPackets = memo(() => {
+    const packets = useMemo(() => {
+        return Array(12).fill('').map((_, i) => ({
+            id: i,
+            startX: `${Math.random() * 100}%`,
+            startY: `${Math.random() * 100}%`,
+            endX: `${Math.random() * 100}%`,
+            endY: `${Math.random() * 100}%`,
+            delay: `${Math.random() * 8}s`,
+            duration: `${5 + Math.random() * 5}s`
+        }))
+    }, [])
+
+    return (
+        <div className="data-packets">
+            {packets.map(packet => (
+                <div 
+                    key={packet.id} 
+                    className="data-packet"
+                    style={{
+                        '--start-x': packet.startX,
+                        '--start-y': packet.startY,
+                        '--end-x': packet.endX,
+                        '--end-y': packet.endY,
+                        animationDelay: packet.delay,
+                        animationDuration: packet.duration
+                    }}
+                />
+            ))}
+        </div>
+    )
+})
+
+// Animated Hacking Content Component
+const AnimatedHackingContent = memo(({ content }) => {
+    const [displayedText, setDisplayedText] = useState('')
+    const [currentIndex, setCurrentIndex] = useState(0)
+    
+    useEffect(() => {
+        if (currentIndex < content.length) {
+            const timeout = setTimeout(() => {
+                setDisplayedText(prev => prev + content[currentIndex])
+                setCurrentIndex(prev => prev + 1)
+            }, 20) // Type speed: 20ms per character
+            
+            return () => clearTimeout(timeout)
+        }
+    }, [currentIndex, content])
+    
+    return (
+        <pre className="alert-content-text">{displayedText}<span className="cursor-blink">_</span></pre>
+    )
+})
+
 // Logo window with hacking animation
 const LogoWindow = memo(({ onUserSystemClick }) => {
     // Memoize binary digits to prevent re-generation
@@ -369,9 +584,11 @@ const LogoWindow = memo(({ onUserSystemClick }) => {
                 </svg>
             </div>
             <div className="raintree-title-animated">RAINTREE.WIKI</div>
-            <button className="user-system-btn" onClick={onUserSystemClick}>
-                <span className="green">► USER SYSTEM</span>
-            </button>
+            <div className="logo-buttons-row">
+                <button className="user-system-btn" onClick={onUserSystemClick}>
+                    <span className="green">► USER SYSTEM</span>
+                </button>
+            </div>
             <div className="binary-rain">
                 {binaryDigits.map(({ key, left, delay, digit }) => (
                     <span key={key} className="binary-digit" style={{ left, animationDelay: delay }}>
@@ -384,10 +601,12 @@ const LogoWindow = memo(({ onUserSystemClick }) => {
 })
 
 export default function App() {
-    const [wins, setWins] = useState([1, 2, 3, 4, 5, 6, 7].map(id => ({ id, visible: id !== 7 })))
-    const [focused, setFocused] = useState(5)
+    const [wins, setWins] = useState([1, 2, 3, 4, 5, 6, 7].map(id => ({ id, visible: id !== 7, glitch: false })))
+    const [focused, setFocused] = useState(1)
     const [user, setUser] = useState(null)
-    const [showAuth, setShowAuth] = useState(false)
+    const [hackingWindows, setHackingWindows] = useState([])
+    const [nextHackingId, setNextHackingId] = useState(1000)
+    const [isCreatingHackWindow, setIsCreatingHackWindow] = useState(false)
     const [globalGlitch, setGlobalGlitch] = useState(false)
 
     // Check for existing session on mount
@@ -399,15 +618,116 @@ export default function App() {
         }
     }, [])
 
-    // Global glitch effect - more frequent
+    // Individual window glitch effect
     useEffect(() => {
-        const interval = setInterval(() => {
-            setGlobalGlitch(true)
-            setTimeout(() => setGlobalGlitch(false), 200)
-        }, 1500 + Math.random() * 1500) // Trigger every 1.5-3 seconds
-
+        const isDashboardOpen = wins.find(w => w.id === 7)?.visible
+        
+        if (isDashboardOpen) {
+            return // No glitches when dashboard is open
+        }
+        
+        const glitchRandomWindow = () => {
+            const visibleWindows = wins.filter(w => w.visible && w.id !== 7)
+            if (visibleWindows.length === 0) return
+            
+            const randomWindow = visibleWindows[Math.floor(Math.random() * visibleWindows.length)]
+            
+            setWins(prev => prev.map(w => 
+                w.id === randomWindow.id ? { ...w, glitch: true } : w
+            ))
+            
+            setTimeout(() => {
+                setWins(prev => prev.map(w => 
+                    w.id === randomWindow.id ? { ...w, glitch: false } : w
+                ))
+            }, 150 + Math.random() * 150)
+        }
+        
+        const interval = setInterval(glitchRandomWindow, 800 + Math.random() * 1200)
         return () => clearInterval(interval)
-    }, [])
+    }, [wins])
+    
+    // Random hacking window system
+    useEffect(() => {
+        const isDashboardOpen = wins.find(w => w.id === 7)?.visible
+        if (isDashboardOpen) {
+            // Clear all hacking windows when dashboard opens
+            setHackingWindows([])
+            setIsCreatingHackWindow(false)
+            return
+        }
+        
+        const messages = [
+            { title: '⚠ SYSTEM BREACH DETECTED', content: 'Unauthorized access detected\n━━━━━━━━━━━━━━━━━━━━━━\nIP Address: 192.168.1.1\nPort: 8080\nProtocol: TCP\nStatus: COMPROMISED\n━━━━━━━━━━━━━━━━━━━━━━\nAction: Monitoring...', type: 'alert' },
+            { title: '🔓 DECRYPTION IN PROGRESS', content: 'Breaking encryption...\n━━━━━━━━━━━━━━━━━━━━━━\nAlgorithm: AES-256\nProgress: 87%\nKeys tested: 2,847,392\nTime remaining: 23s\n━━━━━━━━━━━━━━━━━━━━━━\nStatus: ACTIVE', type: 'info' },
+            { title: '📡 PACKET SNIFFER ACTIVE', content: 'Capturing network traffic...\n━━━━━━━━━━━━━━━━━━━━━━\nPackets captured: 1,247\nProtocol: TCP/IP\nBandwidth: 2.4 Mbps\nTarget: 10.0.0.1\n━━━━━━━━━━━━━━━━━━━━━━\nStatus: MONITORING', type: 'scan' },
+            { title: '🔥 FIREWALL BYPASS', content: 'Exploiting vulnerability...\n━━━━━━━━━━━━━━━━━━━━━━\nCVE: 2024-1337\nExploit: Buffer Overflow\nSuccess rate: 94%\nAttempts: 3/5\n━━━━━━━━━━━━━━━━━━━━━━\nStatus: IN PROGRESS', type: 'exploit' },
+            { title: '💉 SQL INJECTION SUCCESS', content: 'Database compromised!\n━━━━━━━━━━━━━━━━━━━━━━\nTables found: 12\nRecords: 45,892\nAdmin access: GRANTED\nPrivileges: FULL\n━━━━━━━━━━━━━━━━━━━━━━\nStatus: COMPLETE', type: 'success' },
+            { title: '🔨 BRUTE FORCE ATTACK', content: 'Cracking passwords...\n━━━━━━━━━━━━━━━━━━━━━━\nAttempts: 45,892\nSpeed: 1,200/sec\nMatch found: ********\nHash: MD5\n━━━━━━━━━━━━━━━━━━━━━━\nStatus: SUCCESS', type: 'crack' },
+            { title: '🚪 BACKDOOR INSTALLED', content: 'Remote access enabled\n━━━━━━━━━━━━━━━━━━━━━━\nPort: 4444\nConnection: STABLE\nEncryption: None\nPersistence: YES\n━━━━━━━━━━━━━━━━━━━━━━\nStatus: ACTIVE', type: 'success' },
+            { title: '🌐 DNS SPOOFING', content: 'Redirecting traffic...\n━━━━━━━━━━━━━━━━━━━━━━\nTarget: bank.com\nProxy: 10.0.0.1\nRequests: 247\nSuccess: 100%\n━━━━━━━━━━━━━━━━━━━━━━\nStatus: ACTIVE', type: 'exploit' },
+            { title: '⌨️ KEYLOGGER RUNNING', content: 'Recording keystrokes...\n━━━━━━━━━━━━━━━━━━━━━━\nBuffer: 2.4 KB\nKeys logged: 1,847\nUpload: PENDING\nTarget: admin\n━━━━━━━━━━━━━━━━━━━━━━\nStatus: ACTIVE', type: 'alert' },
+            { title: '👑 PRIVILEGE ESCALATION', content: 'Gaining root access...\n━━━━━━━━━━━━━━━━━━━━━━\nUser: admin\nPrivileges: ELEVATED\nMethod: Exploit\nAccess: FULL\n━━━━━━━━━━━━━━━━━━━━━━\nStatus: COMPLETE', type: 'success' },
+            { title: '🎯 DDoS ATTACK INITIATED', content: 'Flooding target server...\n━━━━━━━━━━━━━━━━━━━━━━\nTarget: 203.0.113.0\nBots: 10,000\nRequests/sec: 50,000\nServer status: OVERLOADED\n━━━━━━━━━━━━━━━━━━━━━━\nStatus: ACTIVE', type: 'alert' },
+            { title: '🦠 MALWARE DEPLOYED', content: 'Trojan injection successful\n━━━━━━━━━━━━━━━━━━━━━━\nPayload: Ransomware\nFiles encrypted: 2,847\nDemand: 5 BTC\nSpread: Network-wide\n━━━━━━━━━━━━━━━━━━━━━━\nStatus: DEPLOYED', type: 'alert' },
+            { title: '🔍 PORT SCANNING', content: 'Scanning target ports...\n━━━━━━━━━━━━━━━━━━━━━━\nTarget: 192.168.0.0/24\nPorts scanned: 65,535\nOpen ports: 23\nVulnerable: 5\n━━━━━━━━━━━━━━━━━━━━━━\nStatus: COMPLETE', type: 'scan' },
+            { title: '💾 DATA EXFILTRATION', content: 'Stealing sensitive data...\n━━━━━━━━━━━━━━━━━━━━━━\nFiles copied: 1,247\nSize: 2.4 GB\nDestination: 10.0.0.1\nProgress: 78%\n━━━━━━━━━━━━━━━━━━━━━━\nStatus: IN PROGRESS', type: 'exploit' },
+            { title: '🛡️ ANTIVIRUS DISABLED', content: 'Security bypassed\n━━━━━━━━━━━━━━━━━━━━━━\nTarget: Windows Defender\nMethod: Registry edit\nReal-time protection: OFF\nFirewall: DISABLED\n━━━━━━━━━━━━━━━━━━━━━━\nStatus: SUCCESS', type: 'success' },
+            { title: '📧 PHISHING CAMPAIGN', content: 'Sending malicious emails...\n━━━━━━━━━━━━━━━━━━━━━━\nEmails sent: 10,000\nOpened: 3,247\nClicked: 892\nCredentials stolen: 247\n━━━━━━━━━━━━━━━━━━━━━━\nStatus: ACTIVE', type: 'exploit' },
+            { title: '🔐 CERTIFICATE FORGED', content: 'SSL certificate cloned\n━━━━━━━━━━━━━━━━━━━━━━\nTarget: paypal.com\nValidity: 365 days\nSigned: Self-signed\nTrust: Bypassed\n━━━━━━━━━━━━━━━━━━━━━━\nStatus: ACTIVE', type: 'success' },
+            { title: '🎭 IDENTITY SPOOFED', content: 'Impersonating user...\n━━━━━━━━━━━━━━━━━━━━━━\nTarget: admin@company.com\nSession hijacked: YES\nCookies stolen: 15\nAccess level: FULL\n━━━━━━━━━━━━━━━━━━━━━━\nStatus: ACTIVE', type: 'exploit' },
+            { title: '⚡ ZERO-DAY EXPLOIT', content: 'Using unknown vulnerability\n━━━━━━━━━━━━━━━━━━━━━━\nCVE: UNKNOWN\nAffected: All versions\nPatch available: NO\nExploit success: 100%\n━━━━━━━━━━━━━━━━━━━━━━\nStatus: CRITICAL', type: 'alert' },
+            { title: '🌊 BUFFER OVERFLOW', content: 'Memory corruption detected\n━━━━━━━━━━━━━━━━━━━━━━\nBuffer size: 256 bytes\nOverflow: 1024 bytes\nShellcode injected: YES\nExecution: SUCCESSFUL\n━━━━━━━━━━━━━━━━━━━━━━\nStatus: EXPLOITED', type: 'success' },
+            { title: '🎪 MAN-IN-THE-MIDDLE', content: 'Intercepting communications\n━━━━━━━━━━━━━━━━━━━━━━\nTarget: 192.168.1.100\nProxy: Transparent\nData captured: 2.1 MB\nCredentials: 12\n━━━━━━━━━━━━━━━━━━━━━━\nStatus: ACTIVE', type: 'exploit' }
+        ]
+        
+        const createHackingWindow = () => {
+            const message = messages[Math.floor(Math.random() * messages.length)]
+            const id = nextHackingId
+            setNextHackingId(prev => prev + 1)
+            
+            const windowWidth = 400
+            const windowHeight = 280
+            const maxX = window.innerWidth - windowWidth - 50
+            const maxY = window.innerHeight - windowHeight - 50
+            
+            const hackWindow = {
+                id,
+                title: message.title,
+                content: message.content,
+                type: message.type,
+                x: Math.max(50, Math.random() * maxX),
+                y: Math.max(50, Math.random() * maxY),
+                width: windowWidth,
+                height: windowHeight,
+                visible: true,
+                glitch: false
+            }
+            
+            // Add new window (can have multiple on screen)
+            setHackingWindows(prev => [...prev, hackWindow])
+            
+            // Auto-close after 3 seconds
+            setTimeout(() => {
+                setHackingWindows(prev => prev.filter(w => w.id !== id))
+            }, 3000)
+        }
+        
+        // Create first window after 1 second
+        const initialTimeout = setTimeout(createHackingWindow, 1000)
+        
+        // Create new window every 1 second
+        const interval = setInterval(createHackingWindow, 1000)
+        
+        return () => {
+            clearTimeout(initialTimeout)
+            clearInterval(interval)
+        }
+    }, [wins, nextHackingId, isCreatingHackWindow])
+    
+    const closeHackingWindow = (id) => {
+        setHackingWindows(prev => prev.filter(w => w.id !== id))
+    }
 
     useEffect(() => {
         let rafId = null
@@ -437,13 +757,23 @@ export default function App() {
     const close = (id) => {
         if (id === 7) {
             setShowAuth(false)
+            // If user is logged in and closing dashboard, just hide it
+            if (user) {
+                setWins(prev => prev.map(w => w.id === id ? { ...w, visible: false } : w))
+            } else {
+                // If not logged in, close auth window
+                setWins(prev => prev.map(w => w.id === id ? { ...w, visible: false } : w))
+            }
+        } else {
+            setWins(prev => prev.map(w => w.id === id ? { ...w, visible: false } : w))
         }
-        setWins(wins.map(w => w.id === id ? { ...w, visible: false } : w))
     }
-    const minimize = (id) => setWins(wins.map(w => w.id === id ? { ...w, visible: false } : w))
+    const minimize = (id) => setWins(prev => prev.map(w => w.id === id ? { ...w, visible: false } : w))
     const getZ = (id) => {
         // Window 7 (auth/dashboard) should always be on top when visible
         if (id === 7 && wins.find(w => w.id === 7)?.visible) return 2000
+        // Window 6 (logo) should be on top when focused
+        if (id === 6 && focused === 6) return 1500
         return id === focused ? 1000 : 100 + id
     }
 
@@ -471,6 +801,7 @@ export default function App() {
             setFocused(7)
         }
     }
+
 
     // Add user system button to logo window
     const UserSystemButton = () => (
@@ -584,8 +915,17 @@ export default function App() {
     }
 
     return (
-        <div className={`desktop ${globalGlitch ? 'glitch' : ''}`}>
+        <div className="desktop">
             <div className="star-cursor"></div>
+            <MatrixRain />
+            <ScanLines />
+            <CodeStream />
+            <HexGrid />
+            <BinaryStream />
+            <CircuitBoard />
+            <DataPackets />
+            
+            {/* Regular Windows */}
             {wins.filter(w => w.visible).map(w => {
                 const cfg = data.find(d => d.id === w.id)
                 if (!cfg) return null
@@ -609,7 +949,7 @@ export default function App() {
                         onClose={() => close(w.id)}
                         onMinimize={() => minimize(w.id)}
                         onFocus={() => setFocused(w.id)}
-                        glitch={globalGlitch}
+                        glitch={w.glitch}
                     >
                         {w.id === 6 ? (
                             <LogoWindow onUserSystemClick={openUserSystem} />
@@ -627,6 +967,38 @@ export default function App() {
                     </Window>
                 )
             })}
+            
+            {/* Hacking Alert Windows - Custom Design */}
+            {hackingWindows.map(hw => (
+                <div
+                    key={hw.id}
+                    className="hacking-alert-box"
+                    style={{
+                        left: `${hw.x}px`,
+                        top: `${hw.y}px`,
+                        width: `${hw.width}px`,
+                        zIndex: 10000 + hw.id
+                    }}
+                >
+                    <div className="alert-box-header">
+                        <span className="alert-box-title">{hw.title}</span>
+                        <button 
+                            className="alert-box-close" 
+                            onClick={() => closeHackingWindow(hw.id)}
+                        >
+                            ×
+                        </button>
+                    </div>
+                    <div className="alert-box-body">
+                        <AnimatedHackingContent content={hw.content} />
+                    </div>
+                    <div className="alert-box-footer">
+                        <div className="alert-progress-bar">
+                            <div className="alert-progress-fill"></div>
+                        </div>
+                    </div>
+                </div>
+            ))}
         </div>
     )
 }
