@@ -1,9 +1,25 @@
 :root {
-    --bg: #000000;
-    --green: #00ff99;
-    --cyan: #00ffff;
-    --yellow: #ffff00;
-    --red: #ff0000;
+    /* Default theme colors (Classic Matrix) - can be overridden by theme selection */
+    --color-primary: #00ff00;
+    --color-secondary: #00cc00;
+    --color-accent: #00ff99;
+    --color-background: #000000;
+    --color-surface: #001a00;
+    --color-text: #00ff00;
+    --color-textSecondary: #00cc00;
+    --color-error: #ff0000;
+    --color-warning: #ffff00;
+    --color-success: #00ff00;
+    --color-border: #00ff00;
+    --font-primary: 'Courier New', monospace;
+    --font-secondary: 'Consolas', monospace;
+    
+    /* Legacy variables for backward compatibility */
+    --bg: var(--color-background);
+    --green: var(--color-primary);
+    --cyan: var(--color-accent);
+    --yellow: var(--color-warning);
+    --red: var(--color-error);
     --window-bg: rgba(0, 20, 20, 0.95);
     --titlebar-bg: rgba(0, 30, 30, 0.9);
 }
@@ -27,9 +43,9 @@
 body, html, #root {
     height: 100%;
     margin: 0;
-    font-family: 'Courier New', 'Consolas', monospace;
-    background: var(--bg);
-    color: var(--green);
+    font-family: var(--font-primary);
+    background: var(--color-background);
+    color: var(--color-text);
     overflow: hidden;
 }
 
@@ -37,7 +53,7 @@ body, html, #root {
     width: 100vw;
     min-height: 100vh;
     position: relative;
-    background: #000000;
+    background: var(--color-background);
     cursor: none;
     overflow-y: auto;
     overflow-x: hidden;
@@ -3594,4 +3610,89 @@ span.green {
         left: 5% !important;
         right: 5%;
     }
+}
+
+/* Theme Color Previews */
+.theme-colors {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    justify-content: center;
+}
+
+.color-preview {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--color-border);
+    display: inline-block;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.color-preview:hover {
+    transform: scale(1.2);
+}
+
+.theme-card {
+    cursor: pointer;
+    padding: 15px;
+    border: 2px solid var(--color-border);
+    background: var(--color-surface);
+    border-radius: 8px;
+    transition: all 0.3s;
+    margin-bottom: 10px;
+}
+
+.theme-card:hover {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 15px var(--color-accent);
+    transform: translateY(-2px);
+}
+
+.theme-card.active {
+    border-color: var(--color-accent);
+    background: rgba(0, 255, 153, 0.1);
+    box-shadow: 0 0 20px var(--color-accent);
+}
+
+.theme-name {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.theme-description {
+    font-size: 13px;
+    margin-bottom: 10px;
+    opacity: 0.8;
+}
+
+.themes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    margin: 15px 0;
+}
+
+.theme-clear {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.clear-theme-btn {
+    padding: 10px 20px;
+    background: transparent;
+    border: 2px solid var(--color-error);
+    color: var(--color-error);
+    cursor: pointer;
+    font-family: var(--font-primary);
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.clear-theme-btn:hover {
+    background: var(--color-error);
+    color: var(--color-background);
+    box-shadow: 0 0 15px var(--color-error);
 }

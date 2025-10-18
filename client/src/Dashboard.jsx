@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { supabase } from './supabaseClient'
+import FileManager from './FileManager'
+import NotificationManager from './NotificationManager'
+import { ANIMATION_REGISTRY, WEBSITE_THEMES } from './HackingAnimations'
 
 export default function Dashboard({ user, onLogout }) {
     const [plans, setPlans] = useState([])
@@ -9,6 +12,49 @@ export default function Dashboard({ user, onLogout }) {
     const [editingPlan, setEditingPlan] = useState(null)
     const [draggedTask, setDraggedTask] = useState(null)
     const [showPlanForm, setShowPlanForm] = useState(false)
+    const [showFileManager, setShowFileManager] = useState(false)
+    const [showNotifications, setShowNotifications] = useState(false)
+    const [showAnimationSettings, setShowAnimationSettings] = useState(false)
+    const [animationsEnabled, setAnimationsEnabled] = useState(() => {
+        const saved = localStorage.getItem('animations_enabled')
+        return saved !== null ? JSON.parse(saved) : true
+    })
+    const [activeAnimations, setActiveAnimations] = useState(() => {
+        const saved = localStorage.getItem('active_animations')
+        if (saved) return JSON.parse(saved)
+        // Default: all animations enabled
+        const defaultAnimations = {}
+        Object.keys(ANIMATION_REGISTRY).forEach(key => {
+            defaultAnimations[key] = true
+        })
+        return defaultAnimations
+    })
+    const [selectedTheme, setSelectedTheme] = useState(() => {
+        return localStorage.getItem('website_theme') || null
+    })
+
+    // Apply theme colors to website
+    useEffect(() => {
+        if (selectedTheme && WEBSITE_THEMES[selectedTheme]) {
+            const theme = WEBSITE_THEMES[selectedTheme]
+            const root = document.documentElement
+            
+            // Apply color variables
+            Object.entries(theme.colors).forEach(([key, value]) => {
+                root.style.setProperty(`--color-${key}`, value)
+            })
+            
+            // Apply font variables
+            root.style.setProperty('--font-primary', theme.fonts.primary)
+            root.style.setProperty('--font-secondary', theme.fonts.secondary)
+        } else {
+            // Reset to default (matrix theme)
+            const root = document.documentElement
+            root.style.removeProperty('--color-primary')
+            root.style.removeProperty('--color-secondary')
+            // ... remove other properties
+        }
+    }, [selectedTheme])
     const [stats, setStats] = useState({
         totalPlans: 0,
         activePlans: 0,
@@ -279,6 +325,277 @@ export default function Dashboard({ user, onLogout }) {
         )
     }
 
+    // Toggle animations and save to localStorage
+    const toggleAnimations = () => {
+        const newValue = !animationsEnabled
+        setAnimationsEnabled(newValue)
+        localStorage.setItem('animations_enabled', JSON.stringify(newValue))
+        // Dispatch event to notify App.jsx
+        window.dispatchEvent(new CustomEvent('animationsToggle', { 
+            detail: { 
+                enabled: newValue, 
+                activeAnimations
+            } 
+        }))
+    }
+
+    // Toggle individual animation
+    const toggleIndividualAnimation = (animationKey) => {
+        const newAnimations = {
+            ...activeAnimations,
+            [animationKey]: !activeAnimations[animationKey]
+        }
+        setActiveAnimations(newAnimations)
+        localStorage.setItem('active_animations', JSON.stringify(newAnimations))
+        // Dispatch event to notify App.jsx
+        window.dispatchEvent(new CustomEvent('animationsToggle', { 
+            detail: { 
+                enabled: animationsEnabled, 
+                activeAnimations: newAnimations
+            } 
+        }))
+    }
+
+    // Apply theme
+    const applyTheme = (themeName) => {
+        setSelectedTheme(themeName)
+        if (themeName) {
+            localStorage.setItem('website_theme', themeName)
+        } else {
+            localStorage.removeItem('website_theme')
+        }
+        // Dispatch event to notify App.jsx
+        window.dispatchEvent(new CustomEvent('themeChange', { 
+            detail: { theme: themeName } 
+        }))
+    }
+
+    // Enable all animations
+    const enableAllAnimations = () => {
+        const allEnabled = {}
+        Object.keys(ANIMATION_REGISTRY).forEach(key => {
+            allEnabled[key] = true
+        })
+        setActiveAnimations(allEnabled)
+        localStorage.setItem('active_animations', JSON.stringify(allEnabled))
+        window.dispatchEvent(new CustomEvent('animationsToggle', { 
+            detail: { 
+                enabled: animationsEnabled, 
+                activeAnimations: allEnabled
+            } 
+        }))
+    }
+
+    // Disable all animations
+    const disableAllAnimations = () => {
+        const allDisabled = {}
+        Object.keys(ANIMATION_REGISTRY).forEach(key => {
+            allDisabled[key] = false
+        })
+        setActiveAnimations(allDisabled)
+        localStorage.setItem('active_animations', JSON.stringify(allDisabled))
+        window.dispatchEvent(new CustomEvent('animationsToggle', { 
+            detail: { 
+                enabled: animationsEnabled, 
+                activeAnimations: allDisabled
+            } 
+        }))
+    }
+
+    if (showFileManager) {
+        return (
+            <div className="dashboard-new">
+                <div className="dashboard-header">
+                    <span className="green">┌─[FILE MANAGER]─[{hackerName}]</span>
+                    <button className="logout-btn" onClick={() => setShowFileManager(false)}>
+                        <span className="cyan">[BACK TO DASHBOARD]</span>
+                    </button>
+                </div>
+                <FileManager user={user} />
+            </div>
+        )
+    }
+
+    if (showNotifications) {
+        return (
+            <div className="dashboard-new">
+                <div className="dashboard-header">
+                    <span className="green">┌─[NOTIFICATIONS]─[{hackerName}]</span>
+                    <button className="logout-btn" onClick={() => setShowNotifications(false)}>
+                        <span className="cyan">[BACK TO DASHBOARD]</span>
+                    </button>
+                </div>
+                <NotificationManager user={user} />
+            </div>
+        )
+    }
+
+    if (showAnimationSettings) {
+        // Group animations by category
+        const animationsByCategory = {}
+        Object.entries(ANIMATION_REGISTRY).forEach(([key, { name, category }]) => {
+            if (!animationsByCategory[category]) {
+                animationsByCategory[category] = []
+            }
+            animationsByCategory[category].push({ key, name })
+        })
+
+        const activeCount = Object.values(activeAnimations).filter(Boolean).length
+        const totalCount = Object.keys(ANIMATION_REGISTRY).length
+
+        return (
+            <div className="dashboard-new">
+                <div className="dashboard-header">
+                    <span className="green">┌─[ANIMATION SETTINGS]─[{hackerName}]</span>
+                    <button className="logout-btn" onClick={() => setShowAnimationSettings(false)}>
+                        <span className="cyan">[BACK TO DASHBOARD]</span>
+                    </button>
+                </div>
+                <div className="animation-settings">
+                    {/* Master Toggle */}
+                    <div className="settings-section">
+                        <div className="settings-header">
+                            <span className="cyan">═══ MASTER CONTROL ═══</span>
+                        </div>
+                        <div className="master-controls">
+                            <label className="setting-label master-toggle">
+                                <input
+                                    type="checkbox"
+                                    checked={animationsEnabled}
+                                    onChange={toggleAnimations}
+                                    className="setting-checkbox"
+                                />
+                                <span className="yellow">Enable All Animations</span>
+                                <span className="setting-status">
+                                    {animationsEnabled ? 
+                                        <span className="green">● ACTIVE</span> : 
+                                        <span className="red">● DISABLED</span>
+                                    }
+                                </span>
+                            </label>
+                            <div className="bulk-actions">
+                                <button className="bulk-btn" onClick={enableAllAnimations}>
+                                    <span className="green">✓ ENABLE ALL ({totalCount})</span>
+                                </button>
+                                <button className="bulk-btn" onClick={disableAllAnimations}>
+                                    <span className="red">✕ DISABLE ALL</span>
+                                </button>
+                            </div>
+                            <div className="animation-counter">
+                                <span className="cyan">Active: {activeCount} / {totalCount}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Color Themes Section */}
+                    <div className="settings-section">
+                        <div className="settings-header">
+                            <span className="cyan">═══ COLOR THEMES (CHANGES ENTIRE WEBSITE) ═══</span>
+                        </div>
+                        <div className="themes-grid">
+                            {Object.entries(WEBSITE_THEMES).map(([themeKey, theme]) => (
+                                <div 
+                                    key={themeKey}
+                                    className={`theme-card ${selectedTheme === themeKey ? 'active' : ''}`}
+                                    onClick={() => applyTheme(themeKey)}
+                                >
+                                    <div className="theme-name">
+                                        <span className="green">{theme.name}</span>
+                                        {selectedTheme === themeKey && <span className="yellow"> ✓</span>}
+                                    </div>
+                                    <div className="theme-description">
+                                        <span className="cyan">{theme.description}</span>
+                                    </div>
+                                    <div className="theme-colors">
+                                        <span 
+                                            className="color-preview" 
+                                            style={{ backgroundColor: theme.colors.primary }}
+                                            title="Primary"
+                                        ></span>
+                                        <span 
+                                            className="color-preview" 
+                                            style={{ backgroundColor: theme.colors.secondary }}
+                                            title="Secondary"
+                                        ></span>
+                                        <span 
+                                            className="color-preview" 
+                                            style={{ backgroundColor: theme.colors.accent }}
+                                            title="Accent"
+                                        ></span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        {selectedTheme && (
+                            <div className="theme-clear">
+                                <button className="clear-theme-btn" onClick={() => applyTheme(null)}>
+                                    <span className="red">✕ RESET TO DEFAULT</span>
+                                </button>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Individual Animation Toggles */}
+                    <div className="settings-section">
+                        <div className="settings-header">
+                            <span className="cyan">═══ INDIVIDUAL ANIMATIONS ═══</span>
+                        </div>
+                        <div className="animations-by-category">
+                            {Object.entries(animationsByCategory).map(([category, animations]) => (
+                                <div key={category} className="category-group">
+                                    <div className="category-header">
+                                        <span className="green">▸ {category}</span>
+                                    </div>
+                                    <div className="category-animations">
+                                        {animations.map(({ key, name }) => (
+                                            <label key={key} className="animation-toggle">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={activeAnimations[key] || false}
+                                                    onChange={() => toggleIndividualAnimation(key)}
+                                                    className="animation-checkbox"
+                                                    disabled={!animationsEnabled}
+                                                />
+                                                <span className={activeAnimations[key] ? 'yellow' : 'gray'}>
+                                                    {name}
+                                                </span>
+                                                {activeAnimations[key] && (
+                                                    <span className="green"> ●</span>
+                                                )}
+                                            </label>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Info Section */}
+                    <div className="settings-section">
+                        <div className="settings-header">
+                            <span className="cyan">═══ INFO ═══</span>
+                        </div>
+                        <div className="settings-info">
+                            <span className="yellow">
+                                • Color themes change the entire website design and colors
+                                <br />
+                                • Themes affect all pages, windows, and UI elements
+                                <br />
+                                • Toggle individual animations for custom setup
+                                <br />
+                                • Disabling animations improves performance
+                                <br />
+                                • All settings persist across browser sessions
+                                <br />
+                                • Animations and color themes are independent
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
     if (activeView === 'plan-detail' && selectedPlan) {
         return <PlanDetailView
             plan={selectedPlan}
@@ -315,44 +632,20 @@ export default function Dashboard({ user, onLogout }) {
                 </button>
             </div>
 
-            <div className="stats-grid-new">
-                <StatCard label="Total Plans" value={stats.totalPlans} color="green" />
-                <StatCard label="Active" value={stats.activePlans} color="cyan" />
-                <StatCard label="Completed" value={stats.completedPlans} color="yellow" />
-                <StatCard label="Avg Progress" value={`${stats.totalProgress}%`} color="green" />
-                <StatCard label="Streak" value={`${stats.streak} days`} color="cyan" />
-                <StatCard label="Weekly %" value={`${stats.weeklyCompletion}%`} color="yellow" />
-                <StatCard label="Daily %" value={`${stats.dailyCompletion}%`} color="green" />
-                <StatCard label="Time Spent" value={`${Math.round(stats.timeSpent / 60)}h`} color="cyan" />
-            </div>
-
-            <div className="priority-breakdown">
-                <span className="section-title cyan">PRIORITY BREAKDOWN</span>
-                <div className="priority-bars">
-                    <div className="priority-item">
-                        <span className="red">HIGH: {stats.priorityBreakdown.high}</span>
-                        <div className="priority-bar">
-                            <div className="priority-fill red-bg" style={{ width: `${(stats.priorityBreakdown.high / (stats.totalPlans || 1)) * 100}%` }}></div>
-                        </div>
-                    </div>
-                    <div className="priority-item">
-                        <span className="yellow">MEDIUM: {stats.priorityBreakdown.medium}</span>
-                        <div className="priority-bar">
-                            <div className="priority-fill yellow-bg" style={{ width: `${(stats.priorityBreakdown.medium / (stats.totalPlans || 1)) * 100}%` }}></div>
-                        </div>
-                    </div>
-                    <div className="priority-item">
-                        <span className="green">LOW: {stats.priorityBreakdown.low}</span>
-                        <div className="priority-bar">
-                            <div className="priority-fill green-bg" style={{ width: `${(stats.priorityBreakdown.low / (stats.totalPlans || 1)) * 100}%` }}></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {/* Statistics and priority breakdown sections have been hidden */}
 
             <div className="dashboard-actions-new">
                 <button className="action-btn-new primary" onClick={() => setShowPlanForm(true)}>
                     <span className="green">+ CREATE PLAN</span>
+                </button>
+                <button className="action-btn-new secondary" onClick={() => setShowFileManager(true)}>
+                    <span className="cyan">📁 FILE</span>
+                </button>
+                <button className="action-btn-new secondary" onClick={() => setShowNotifications(true)}>
+                    <span className="yellow">🔔 NOTIFICATIONS</span>
+                </button>
+                <button className="action-btn-new secondary" onClick={() => setShowAnimationSettings(true)}>
+                    <span className="green">🎨 ANIMATIONS</span>
                 </button>
             </div>
 

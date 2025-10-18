@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useMemo, useCallback, memo } from 'react'
 import AuthWindow from './AuthWindow'
 import Dashboard from './Dashboard'
+import { AnimationContainer, LogoWindow, AnimatedHackingContent, ANIMATION_REGISTRY, WEBSITE_THEMES } from './HackingAnimations'
 
 function Window({ id, title, children, x, y, width, height, onClose, onMinimize, zIndex, onFocus, glitch }) {
     const [pos, setPos] = useState({ x, y })
@@ -340,266 +341,6 @@ function IPTerminal() {
     )
 }
 
-// Matrix Rain Animation
-const MatrixRain = memo(() => {
-    const columns = useMemo(() => {
-        const cols = Math.floor(window.innerWidth / 20)
-        return Array(cols).fill('').map((_, i) => ({
-            id: i,
-            left: `${i * 20}px`,
-            delay: `${Math.random() * 5}s`,
-            duration: `${10 + Math.random() * 10}s`
-        }))
-    }, [])
-
-    return (
-        <div className="matrix-rain">
-            {columns.map(col => (
-                <div 
-                    key={col.id} 
-                    className="matrix-column" 
-                    style={{ 
-                        left: col.left, 
-                        animationDelay: col.delay,
-                        animationDuration: col.duration
-                    }}
-                >
-                    {Array(20).fill('').map((_, i) => (
-                        <span key={i}>{String.fromCharCode(0x30A0 + Math.random() * 96)}</span>
-                    ))}
-                </div>
-            ))}
-        </div>
-    )
-})
-
-// Scanning Lines Animation
-const ScanLines = memo(() => (
-    <div className="scan-lines-container">
-        <div className="scan-line scan-line-1"></div>
-        <div className="scan-line scan-line-2"></div>
-        <div className="scan-line scan-line-3"></div>
-    </div>
-))
-
-// Code Stream Animation
-const CodeStream = memo(() => {
-    const codeLines = useMemo(() => [
-        '> Initializing neural network...',
-        '> Loading quantum algorithms...',
-        '> Establishing secure connection...',
-        '> Decrypting data stream...',
-        '> Analyzing network topology...',
-        '> Compiling exploit modules...',
-        '> Scanning for vulnerabilities...',
-        '> Injecting payload...',
-        '> Bypassing firewall...',
-        '> Access granted...'
-    ], [])
-
-    return (
-        <div className="code-stream">
-            {codeLines.map((line, i) => (
-                <div 
-                    key={i} 
-                    className="code-line" 
-                    style={{ animationDelay: `${i * 2}s` }}
-                >
-                    <span className="green">{line}</span>
-                </div>
-            ))}
-        </div>
-    )
-})
-
-// Hexagonal Grid Background
-const HexGrid = memo(() => {
-    const hexagons = useMemo(() => {
-        const count = 15
-        return Array(count).fill('').map((_, i) => ({
-            id: i,
-            top: `${Math.random() * 100}%`,
-            left: `${Math.random() * 100}%`,
-            delay: `${Math.random() * 10}s`,
-            duration: `${15 + Math.random() * 10}s`
-        }))
-    }, [])
-
-    return (
-        <div className="hex-grid">
-            {hexagons.map(hex => (
-                <div 
-                    key={hex.id} 
-                    className="hexagon" 
-                    style={{ 
-                        top: hex.top, 
-                        left: hex.left,
-                        animationDelay: hex.delay,
-                        animationDuration: hex.duration
-                    }}
-                >
-                    <div className="hex-inner"></div>
-                </div>
-            ))}
-        </div>
-    )
-})
-
-// Binary Stream Animation
-const BinaryStream = memo(() => {
-    const streams = useMemo(() => {
-        return Array(8).fill('').map((_, i) => ({
-            id: i,
-            left: `${10 + i * 12}%`,
-            delay: `${Math.random() * 5}s`,
-            binary: Array(30).fill('').map(() => Math.random() > 0.5 ? '1' : '0').join('')
-        }))
-    }, [])
-
-    return (
-        <div className="binary-stream-bg">
-            {streams.map(stream => (
-                <div 
-                    key={stream.id} 
-                    className="binary-column-bg" 
-                    style={{ left: stream.left, animationDelay: stream.delay }}
-                >
-                    {stream.binary}
-                </div>
-            ))}
-        </div>
-    )
-})
-
-// Circuit Board Pattern
-const CircuitBoard = memo(() => {
-    const lines = useMemo(() => {
-        return Array(20).fill('').map((_, i) => ({
-            id: i,
-            type: Math.random() > 0.5 ? 'horizontal' : 'vertical',
-            position: `${Math.random() * 100}%`,
-            length: `${30 + Math.random() * 40}%`,
-            delay: `${Math.random() * 10}s`
-        }))
-    }, [])
-
-    return (
-        <div className="circuit-board">
-            {lines.map(line => (
-                <div 
-                    key={line.id} 
-                    className={`circuit-line ${line.type}`}
-                    style={{
-                        [line.type === 'horizontal' ? 'top' : 'left']: line.position,
-                        [line.type === 'horizontal' ? 'width' : 'height']: line.length,
-                        animationDelay: line.delay
-                    }}
-                />
-            ))}
-        </div>
-    )
-})
-
-// Data Packets Animation
-const DataPackets = memo(() => {
-    const packets = useMemo(() => {
-        return Array(12).fill('').map((_, i) => ({
-            id: i,
-            startX: `${Math.random() * 100}%`,
-            startY: `${Math.random() * 100}%`,
-            endX: `${Math.random() * 100}%`,
-            endY: `${Math.random() * 100}%`,
-            delay: `${Math.random() * 8}s`,
-            duration: `${5 + Math.random() * 5}s`
-        }))
-    }, [])
-
-    return (
-        <div className="data-packets">
-            {packets.map(packet => (
-                <div 
-                    key={packet.id} 
-                    className="data-packet"
-                    style={{
-                        '--start-x': packet.startX,
-                        '--start-y': packet.startY,
-                        '--end-x': packet.endX,
-                        '--end-y': packet.endY,
-                        animationDelay: packet.delay,
-                        animationDuration: packet.duration
-                    }}
-                />
-            ))}
-        </div>
-    )
-})
-
-// Animated Hacking Content Component
-const AnimatedHackingContent = memo(({ content }) => {
-    const [displayedText, setDisplayedText] = useState('')
-    const [currentIndex, setCurrentIndex] = useState(0)
-    
-    useEffect(() => {
-        if (currentIndex < content.length) {
-            const timeout = setTimeout(() => {
-                setDisplayedText(prev => prev + content[currentIndex])
-                setCurrentIndex(prev => prev + 1)
-            }, 20) // Type speed: 20ms per character
-            
-            return () => clearTimeout(timeout)
-        }
-    }, [currentIndex, content])
-    
-    return (
-        <pre className="alert-content-text">{displayedText}<span className="cursor-blink">_</span></pre>
-    )
-})
-
-// Logo window with hacking animation
-const LogoWindow = memo(({ onUserSystemClick }) => {
-    // Memoize binary digits to prevent re-generation
-    const binaryDigits = useMemo(() => 
-        Array(15).fill('').map((_, i) => ({
-            key: i,
-            left: `${i * 6.67}%`,
-            delay: `${Math.random() * 2}s`,
-            digit: Math.random() > 0.5 ? '1' : '0'
-        }))
-    , [])
-
-    return (
-        <div className="logo-content">
-            <div className="tree-logo-animated">
-                <svg viewBox="0 0 200 200" width="70" height="70">
-                    <circle cx="100" cy="100" r="95" fill="none" stroke="#00ff99" strokeWidth="2" className="pulse-ring"/>
-                    <rect x="92" y="130" width="16" height="40" fill="#00ff99"/>
-                    <path d="M 85 170 Q 70 175 60 180 M 115 170 Q 130 175 140 180 M 100 170 L 100 180" stroke="#00ff99" strokeWidth="2" fill="none"/>
-                    <ellipse cx="100" cy="90" rx="50" ry="35" fill="#00ff99" className="tree-part"/>
-                    <ellipse cx="75" cy="100" rx="35" ry="30" fill="#00ff99" className="tree-part"/>
-                    <ellipse cx="125" cy="100" rx="35" ry="30" fill="#00ff99" className="tree-part"/>
-                    <ellipse cx="100" cy="70" rx="30" ry="25" fill="#00ff99" className="tree-part"/>
-                    <circle cx="80" cy="95" r="3" fill="#050d0d" className="tree-eye"/>
-                    <circle cx="120" cy="95" r="3" fill="#050d0d" className="tree-eye"/>
-                    <circle cx="100" cy="85" r="3" fill="#050d0d" className="tree-eye"/>
-                </svg>
-            </div>
-            <div className="raintree-title-animated">RAINTREE.WIKI</div>
-            <div className="logo-buttons-row">
-                <button className="user-system-btn" onClick={onUserSystemClick}>
-                    <span className="green">► USER SYSTEM</span>
-                </button>
-            </div>
-            <div className="binary-rain">
-                {binaryDigits.map(({ key, left, delay, digit }) => (
-                    <span key={key} className="binary-digit" style={{ left, animationDelay: delay }}>
-                        {digit}
-                    </span>
-                ))}
-            </div>
-        </div>
-    )
-})
-
 export default function App() {
     const [wins, setWins] = useState([1, 2, 3, 4, 5, 6, 7].map(id => ({ id, visible: id !== 7, glitch: false })))
     const [focused, setFocused] = useState(1)
@@ -612,6 +353,49 @@ export default function App() {
     const [globalGlitch, setGlobalGlitch] = useState(false)
     const windowTimeoutsRef = useRef(new Map())
     const windowCreationTimesRef = useRef(new Map())
+    const [animationsEnabled, setAnimationsEnabled] = useState(() => {
+        const saved = localStorage.getItem('animations_enabled')
+        return saved !== null ? JSON.parse(saved) : true
+    })
+    const [activeAnimations, setActiveAnimations] = useState(() => {
+        const saved = localStorage.getItem('active_animations')
+        if (saved) return JSON.parse(saved)
+        // Default: all animations enabled
+        const defaultAnimations = {}
+        Object.keys(ANIMATION_REGISTRY).forEach(key => {
+            defaultAnimations[key] = true
+        })
+        return defaultAnimations
+    })
+    const [websiteTheme, setWebsiteTheme] = useState(() => {
+        return localStorage.getItem('website_theme') || null
+    })
+
+    // Apply website theme colors
+    useEffect(() => {
+        if (websiteTheme && WEBSITE_THEMES[websiteTheme]) {
+            const theme = WEBSITE_THEMES[websiteTheme]
+            const root = document.documentElement
+            
+            // Apply color variables
+            Object.entries(theme.colors).forEach(([key, value]) => {
+                root.style.setProperty(`--color-${key}`, value)
+            })
+            
+            // Apply font variables
+            root.style.setProperty('--font-primary', theme.fonts.primary)
+            root.style.setProperty('--font-secondary', theme.fonts.secondary)
+        } else {
+            // Reset to default
+            const root = document.documentElement
+            const defaultTheme = WEBSITE_THEMES.matrix
+            Object.entries(defaultTheme.colors).forEach(([key, value]) => {
+                root.style.setProperty(`--color-${key}`, value)
+            })
+            root.style.setProperty('--font-primary', defaultTheme.fonts.primary)
+            root.style.setProperty('--font-secondary', defaultTheme.fonts.secondary)
+        }
+    }, [websiteTheme])
 
     // Check for existing session on mount
     useEffect(() => {
@@ -620,6 +404,27 @@ export default function App() {
         if (userId && userPassword) {
             setUser({ id: userId, password: userPassword })
         }
+    }, [])
+
+    // Listen for animation toggle events from Dashboard
+    useEffect(() => {
+        const handleAnimationToggle = (event) => {
+            setAnimationsEnabled(event.detail.enabled)
+            if (event.detail.activeAnimations) {
+                setActiveAnimations(event.detail.activeAnimations)
+            }
+        }
+        window.addEventListener('animationsToggle', handleAnimationToggle)
+        return () => window.removeEventListener('animationsToggle', handleAnimationToggle)
+    }, [])
+
+    // Listen for theme change events from Dashboard
+    useEffect(() => {
+        const handleThemeChange = (event) => {
+            setWebsiteTheme(event.detail.theme)
+        }
+        window.addEventListener('themeChange', handleThemeChange)
+        return () => window.removeEventListener('themeChange', handleThemeChange)
     }, [])
 
     // Individual window glitch effect
@@ -996,13 +801,10 @@ export default function App() {
     return (
         <div className="desktop">
             <div className="star-cursor"></div>
-            <MatrixRain />
-            <ScanLines />
-            <CodeStream />
-            <HexGrid />
-            <BinaryStream />
-            <CircuitBoard />
-            <DataPackets />
+            <AnimationContainer 
+                enabled={animationsEnabled} 
+                activeAnimations={activeAnimations}
+            />
             
             {/* Regular Windows */}
             {wins.filter(w => w.visible).map(w => {
